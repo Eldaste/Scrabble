@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="DatabaseTesting/src"/>
+	<classpathentry kind="src" path="ProxyServer"/>
+	<classpathentry kind="lib" path="DatabaseTesting/lib/sqlite-jdbc-3.8.11.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
