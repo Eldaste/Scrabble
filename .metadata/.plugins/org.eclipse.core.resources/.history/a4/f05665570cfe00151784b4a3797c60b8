@@ -12,8 +12,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-//aid:https://www.youtube.com/watch?v=HfGWVy-eMRc
-
 public class DOM_Parser {
 	public static void main( String args[] )
 	  {
@@ -39,11 +37,10 @@ public class DOM_Parser {
 					for(int j = 0; j < defList.getLength();j++)
 					{
 						Node def = defList.item(j);
-						if(def.getNodeType() == Node.ELEMENT_NODE)
+						if(w.getNodeType() == Node.ELEMENT_NODE)
 						{
 							Element fulldef = (Element) def;
-							System.out.println("Entry" + id +":" + fulldef.getTagName()+ 
-									"-" + fulldef.getTextContent());
+							
 						}
 						
 					}
