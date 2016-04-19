@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 public class ProxyServer {
 	private static String host;
 	private static int remoteport;
-	private static int localport;
+	private static int localport = 2000 ;
 	private static final Logger Log = 
 			Logger.getLogger(Thread.currentThread().getStackTrace()
 					[0].getClassName());
