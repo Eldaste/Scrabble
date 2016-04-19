@@ -14,7 +14,6 @@ public class SAXParseHandler extends DefaultHandler  {
 	private Word parsedWord;
 	private boolean ewTag;
 	private boolean defTag;
-	StringBuilder tmpBuilder;
 	
 	SAXParseHandler()
 	{
@@ -22,7 +21,6 @@ public class SAXParseHandler extends DefaultHandler  {
 		parsedWord = new Word();
 		ewTag = false;
 		defTag = false;
-		tmpBuilder = new StringBuilder();
 	}
 	/*
 	 *  Read From File
@@ -47,14 +45,14 @@ public class SAXParseHandler extends DefaultHandler  {
 		// TODO Auto-generated method stub
 		if(qName.equalsIgnoreCase("ew"))
 		{
-			tmpBuilder = new StringBuilder();
+			StringBuilder tmpBuilder = new StringBuilder();  
 		}
 	}
 	
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		// TODO Auto-generated method stub
-		tmpBuilder.append(ch);
+		super.characters(ch, start, length);
 	}
 	
 	@Override
@@ -62,10 +60,6 @@ public class SAXParseHandler extends DefaultHandler  {
 		// TODO Auto-generated method stub
 		super.endElement(uri, localName, qName);
 		System.out.println("Starting Document Processsing ...\n");
-		if(ewTag)
-		{
-			parsedWord.setWord(tmpBuilder.toString());
-		}
 	}
 	
 	@Override
