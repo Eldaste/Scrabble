@@ -1,0 +1,32 @@
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.sql.*;
+
+public class Server {
+	public final int PORT=8080;
+	Connection c = null;
+    Statement stmt = null;
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	public Server() throws ClassNotFoundException, SQLException, IOException{
+		    Class.forName("org.sqlite.JDBC");
+		    c = DriverManager.getConnection("jdbc:sqlite:Srs.db");
+		    System.out.println("Opened database successfully");
+		    
+		    ServerSocket s=new ServerSocket(PORT);
+		    System.out.println("Opened server successfully");
+		    
+		    stmt = c.createStatement();
+		    String sql = ""; 
+		    stmt.executeUpdate(sql);
+		    stmt.close();
+		    c.close();
+		    s.close();
+		  }
+	}
+
+
