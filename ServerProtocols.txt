@@ -9,7 +9,7 @@ Define:[UA] as Username[00]AuthToken[00]
 
 0: Administraive Codes
 	0 Confirm AuthToken|Username[00]authtoken|[00]  or [FF]
-	1 Create Auth|Username|[00] or Authtoken
+	1 Create Auth|Username|[FF] or Authtoken
 	2 Change auth|Username[00]authtoken[00]NewToken|[00] or [FF]
 
 1: Menu Codes

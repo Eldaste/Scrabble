@@ -3,12 +3,17 @@ package mainsrv;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.SecureRandom;
 import java.sql.*;
 
 import Threads.Worker;
 
 public class Server {
-	public final int PORT=8080;
+	public static final int PORT=8080;
+	public static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	public static final int DEFAULTAUTHLENGTH=20;
+	
+	static SecureRandom rnd = new SecureRandom();
 	
 	Connection c = null;
     Statement stmt = null;
@@ -80,11 +85,11 @@ public class Server {
 		comm+=sb.toString()+";";
 		
 		ResultSet rs=stmt.executeQuery(comm);
-		boolean res=0==rs.getInt(1);
+		boolean res=(0==rs.getInt(1));
 		
 		rs.close();
 		
-		return (res);
+		return (!res);
 	}
 
 	public void terminate(){
@@ -108,6 +113,49 @@ public class Server {
 	    System.out.println("Toodles");
 	    System.exit(0);
 	}
+
+	
+	public boolean userExists(int[] test) throws SQLException {
+		StringBuffer sb=new StringBuffer();
+		
+		for(int i=0;i<test.length;i++){
+			if(test[i]==0)
+				break;
+			sb.append((char)test[i]);
+		}
+		
+		String comm="SELECT COUNT(Username) FROM Users WHERE Username="+sb.toString()+";";
+		
+		ResultSet rs=stmt.executeQuery(comm);
+		boolean res=(0==rs.getInt(1));
+		
+		rs.close();
+		
+		return (!res);
+	}
+
+	public int[] createUser(int[] msg) throws SQLException {
+		int[] auth=new int[DEFAULTAUTHLENGTH];
+		String token=randomString(DEFAULTAUTHLENGTH);
+		
+		for(int i=0; i<DEFAULTAUTHLENGTH;i++){
+			auth[i]=token.charAt(i);
+		}
+		
+		StringBuffer Usrnam=new StringBuffer();
+		String comm="INSERT INTO Users (Username,AuthToken) VALUES("+Usrnam.toString()+","+token+");";
+		
+		stmt.executeUpdate(comm);
+		
+		return auth;
+	}
+	
+	public String randomString( int len ){
+		   StringBuilder sb = new StringBuilder( len );
+		   for( int i = 0; i < len; i++ ) 
+		      sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+		   return sb.toString();
+		}
 }
 
 

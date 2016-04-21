@@ -32,28 +32,22 @@ public class Worker extends Thread {
 				
 				int[] outgoing={0xFF};
 				
+				try{
 				switch(c){
 					case 0x00:	if(serv.validate(msg))
 									outgoing[0]=0x00;
-								break; 
+								break;
+					case 0x01:	if(serv.userExists(msg))
+									outgoing=serv.createUser(msg);
+								break;
 					default:	continue loop;
-				}
+				}}
+				catch (SQLException e) {e.printStackTrace();} 
 				
 				o.write(c);
-				int kk=outgoing.length;
-				
-				for(;kk>255;kk-=255){
-					o.write(0x00);
-				}
-				
-				o.write(kk);
-				
-				for(int ii=0;ii<outgoing.length;ii++){
-					o.write(outgoing[ii]);
-				}
+				sendMsg(outgoing,o);
 			}
 		} catch (IOException e) {/*e.printStackTrace();*/} 
-		catch (SQLException e) {e.printStackTrace();}
 		finally{
 			System.out.println("Client Diconnected ");
 			try {
@@ -85,5 +79,19 @@ public class Worker extends Thread {
 		}
 		
 		return re;
+	}
+
+	public void sendMsg(int[] outgoing,OutputStream o) throws IOException{
+		int kk=outgoing.length;
+		
+		for(;kk>255;kk-=255){
+			o.write(0x00);
+		}
+		
+		o.write(kk);
+		
+		for(int ii=0;ii<outgoing.length;ii++){
+			o.write(outgoing[ii]);
+		}
 	}
 }
