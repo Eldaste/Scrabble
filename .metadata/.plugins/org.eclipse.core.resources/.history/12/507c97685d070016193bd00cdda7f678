@@ -30,27 +30,17 @@ public class Worker extends Thread {
 				int c=i.read();
 				int[] msg=recoverMsg(i);
 				
-				int[] outgoing={0xFF};
-				
 				switch(c){
-					case 0x00:	if(serv.validate(msg))
-									outgoing[0]=0x00;
+					case 0x00:	o.write(0x00);
+								o.write(0x01);
+								if(serv.validate(msg))
+									o.write(0x00);
+								else
+									o.write(0xFF);
 								break; 
 					default:	continue loop;
 				}
 				
-				o.write(c);
-				int kk=outgoing.length;
-				
-				for(;kk>255;kk-=255){
-					o.write(0x00);
-				}
-				
-				o.write(kk);
-				
-				for(int ii=0;ii<outgoing.length;ii++){
-					o.write(outgoing[ii]);
-				}
 			}
 		} catch (IOException e) {/*e.printStackTrace();*/} 
 		catch (SQLException e) {e.printStackTrace();}

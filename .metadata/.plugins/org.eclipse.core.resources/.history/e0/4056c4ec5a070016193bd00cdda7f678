@@ -20,7 +20,7 @@ public class Test {
 	      
 	      ResultSet rs = stmt.executeQuery( "SELECT Count(Username) FROM Users;" );
 	      while ( rs.next() ) {
-	         System.out.println( "SALARY = " + rs.getInt(1) );
+	         System.out.println( "SALARY = " + rs.getInt(0) );
 	         System.out.println();
 	      }
 	      rs.close();

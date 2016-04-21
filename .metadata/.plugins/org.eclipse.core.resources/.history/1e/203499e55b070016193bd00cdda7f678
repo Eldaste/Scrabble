@@ -72,8 +72,6 @@ public class Server {
 		sb=new StringBuffer();
 		
 		for(;i<test.length;i++){
-			if(test[i]==0)
-				break;
 			sb.append((char)test[i]);
 		}
 		

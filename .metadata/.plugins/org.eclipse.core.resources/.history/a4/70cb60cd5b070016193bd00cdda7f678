@@ -72,19 +72,14 @@ public class Server {
 		sb=new StringBuffer();
 		
 		for(;i<test.length;i++){
-			if(test[i]==0)
-				break;
 			sb.append((char)test[i]);
 		}
 		
 		comm+=sb.toString()+";";
 		
 		ResultSet rs=stmt.executeQuery(comm);
-		boolean res=0==rs.getInt(1);
 		
-		rs.close();
-		
-		return (res);
+		return (0==rs.getInt(1));
 	}
 
 	public void terminate(){
