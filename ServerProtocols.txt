@@ -13,13 +13,14 @@ Define:[UA] as Username[00]AuthToken[00]
 	2 Change auth|Username[00]authtoken[00]NewToken|[00] or [FF]
 
 1: Menu Codes
-	0 Get game list|[UA]|[NumGames]([Size of Game Resp][Game Name][00][GameNum])* or [FF]
-	1 Get Searching List|[UA]|[NumGames](['Num in Game']['/']['Max Num'][Size of Game Resp]Game Name[00][GameNum])* or [FF]
+	0 Get game list|[UA]|[NumGames]([Size of Game Resp][Game Name][00][GameNum (in String Form)])* or [FF]
+	1 
+	2 Get Searching List|[UA]|[NumGames]([Size of Game Resp]Game Name[00][GameNum])* or [FF]
 	
 3: Game Codes
-	0 Get Board|[UA][Game Num(GN)]|Flattened 2-D array for the board
+	0 Get Board|[UA][Game Num(GN) in String Form]|Flattened 2-D array for the board
 	1 Get Player Nums|[UA][GN]|[Players]Player Name[00]...
 	2 Get Tiles|[UA][GN]|[Tile]*
 	3 Get New Tile|[UA][GN]|[Tile]
-	4 Retun Tile|[UA][Tile][GN]|[00]
+	4 Retun Tile|[UA][GN][00][Tile]*|[00]
 	5 Swp Tiles|[UA][GN][00][Tile]*|[Tile]

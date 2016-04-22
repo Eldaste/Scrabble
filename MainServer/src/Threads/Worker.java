@@ -40,7 +40,34 @@ public class Worker extends Thread {
 					case 0x01:	if(serv.userExists(msg))
 									outgoing=serv.createUser(msg);
 								break;
-					default:	continue loop;
+					case 0x02:  if(serv.validate(msg))
+									outgoing=serv.alterPass(msg);
+								break;
+					case 0x10:	if(serv.validate(msg))
+									outgoing=serv.gameList(msg);
+								break;
+					case 0x12:	if(serv.validate(msg))
+									outgoing=serv.gameSeekList(msg);
+								break;
+					case 0x30:	if(serv.validate(msg))
+									outgoing=serv.getBoard(msg);
+								break;
+					case 0x31:	if(serv.validate(msg))
+									outgoing=serv.getPlayers(msg);
+								break;
+					case 0x32:	if(serv.validate(msg))
+									outgoing=serv.getTiles(msg);
+								break;
+					case 0x33:	if(serv.validate(msg))
+									outgoing=serv.newTile(msg);
+								break;
+					case 0x34:	if(serv.validate(msg))
+									outgoing=serv.returnTile(msg);
+								break;
+					case 0x35:	if(serv.validate(msg))
+									if(serv.returnTile(msg)[0]!=0xFF)
+										outgoing=serv.newTile(msg);		
+					default:	break;
 				}}
 				catch (SQLException e) {e.printStackTrace();} 
 				
@@ -56,7 +83,7 @@ public class Worker extends Thread {
 			catch (IOException e) {}
 		}
 	}
-	
+
 	public int[] recoverMsg(InputStream i) throws IOException{
 		int msglen=0;
 		

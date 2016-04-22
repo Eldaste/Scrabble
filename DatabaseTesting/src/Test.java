@@ -18,11 +18,12 @@ public class Test {
 	                   " Score          INT)"; 
 	      stmt.executeUpdate(sql);*/
 	      
-	      ResultSet rs = stmt.executeQuery( "SELECT Count(Username) FROM Users;" );
-	      while ( rs.next() ) {
+	      ResultSet rs = stmt.executeQuery( "SELECT Username,'Blarg' FROM Users WHERE Username='t';" );
+	      System.out.println(rs.getMetaData().getColumnCount());
+	      //while ( rs.next() ) {
 	         System.out.println( "SALARY = " + rs.getInt(1) );
 	         System.out.println();
-	      }
+	     // }
 	      rs.close();
 	      stmt.close();
 	      c.close();
