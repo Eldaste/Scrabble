@@ -63,7 +63,7 @@ public class Server {
 		  }
 	
 	public boolean validate(int[] test) throws SQLException{
-		String comm="SELECT COUNT(Username) FROM Users WHERE Username='";
+		String comm="SELECT COUNT(Username) FROM Users WHERE Username=";
 		int i=0;
 		StringBuffer sb=new StringBuffer();
 		
@@ -74,7 +74,7 @@ public class Server {
 		
 		i++;
 		
-		comm+=sb.toString()+"' AND AuthToken='";
+		comm+=sb.toString()+" AND AuthToken=";
 		
 		sb=new StringBuffer();
 		
@@ -84,7 +84,7 @@ public class Server {
 			sb.append((char)test[i]);
 		}
 		
-		comm+=sb.toString()+"';";
+		comm+=sb.toString()+";";
 		
 		ResultSet rs=stmt.executeQuery(comm);
 		boolean res=(0==rs.getInt(1));
@@ -117,7 +117,7 @@ public class Server {
 	}
 
 	public boolean userExists(int[] test) throws SQLException {
-		String comm="SELECT COUNT(Username) FROM Users WHERE Username='"+extractUsername(test)+"';";
+		String comm="SELECT COUNT(Username) FROM Users WHERE Username="+extractUsername(test)+";";
 		
 		ResultSet rs=stmt.executeQuery(comm);
 		boolean res=(0==rs.getInt(1));
@@ -135,7 +135,7 @@ public class Server {
 			auth[i]=token.charAt(i);
 		}
 
-		String comm="INSERT INTO Users (Username,AuthToken) VALUES('"+extractUsername(msg)+"','"+token+"');";
+		String comm="INSERT INTO Users (Username,AuthToken) VALUES("+extractUsername(msg)+","+token+");";
 		
 		stmt.executeUpdate(comm);
 		c.commit();
@@ -167,7 +167,7 @@ public class Server {
 			sb.append((char)msg[i]);
 		}
 		
-		String comm="UPDATE Users SET AuthToken='"+sb.toString()+"' WHERE Username='"+extractUsername(msg)+"';";
+		String comm="UPDATE Users SET AuthToken="+sb.toString()+"WHERE Username="+extractUsername(msg)+";";
 		
 		stmt.executeUpdate(comm);
 		c.commit();
@@ -226,8 +226,7 @@ public class Server {
 	}
 
 	public int[] gameList(int[] msg) throws SQLException {
-		String comm="SELECT g.Name,g.GID FROM Game g,InGame i WHERE i.GID=g.GID AND i.Username='"
-				+extractUsername(msg)+"';";
+		String comm="SELECT g.Name,g.GID FROM Game g,InGame i WHERE i.GID=g.GID AND i.Username="+extractUsername(msg)+";";
 		ResultSet rs = stmt.executeQuery( comm );
 		int totallen=0;
 		ArrayList<int[]> taco=new ArrayList<int[]>();
@@ -272,8 +271,7 @@ public class Server {
 	}
 
 	public int[] gameSeekList(int[] msg) throws SQLException {
-		String comm="SELECT g.Name,g.GSID FROM GameSeek g,Seeking i WHERE i.GSID=g.GSID AND i.Username='"
-				+extractUsername(msg)+"';";
+		String comm="SELECT g.Name,g.GSID FROM GameSeek g,Seeking i WHERE i.GSID=g.GSID AND i.Username="+extractUsername(msg)+";";
 		ResultSet rs = stmt.executeQuery( comm );
 		int totallen=0;
 		ArrayList<int[]> taco=new ArrayList<int[]>();
@@ -319,7 +317,7 @@ public class Server {
 
 	public int[] getBoard(int[] msg) throws SQLException {
 		String comm="SELECT t.Boardstate FROM Turn t WHERE t.GID="+new String(extractUsername(trimUA(msg)))
-				+" AND NOT EXISTS(SELECT * FROM Turn b WHERE b.TurnNum>a.TurnNum);";
+				+"AND NOT EXISTS(SELECT * FROM Turn b WHERE b.TurnNum>a.TurnNum);";
 		
 		ResultSet rs = stmt.executeQuery( comm );
 		
@@ -342,7 +340,7 @@ public class Server {
 
 	public int[] getPlayers(int[] msg) throws SQLException {
 		String comm="SELECT i.Username FROM InGame i WHERE i.GID="+new String(extractUsername(trimUA(msg)))
-				+" ORDER BY TurnNum;";
+				+"ORDER BY TurnNum;";
 		
 		ResultSet rs = stmt.executeQuery( comm );
 		int totallen=0;
@@ -391,11 +389,11 @@ public class Server {
 			sb.append(res[i]);
 		}
 		
-		comm="UPDATE Game SET AvalibleTiles='"+sb.toString()+"' WHERE GID="+game+";";
+		comm="UPDATE Game SET AvalibleTiles="+sb.toString()+" WHERE GID="+game+";";
 		stmt.executeUpdate(comm);
 		
-		comm="UPDATE InGame SET Tiles='"+newTil+"' WHERE GID="+game+
-				"AND Username='"+extractUsername(msg)+"';";
+		comm="UPDATE InGame SET Tiles="+newTil+" WHERE GID="+game+
+				"AND Username="+extractUsername(msg)+";";
 		stmt.executeUpdate(comm);
 		
 		c.commit();
@@ -406,7 +404,7 @@ public class Server {
 	public int[] getTiles(int[] msg) throws SQLException {
 		String user=extractUsername(msg);
 		String game=extractUsername(trimUA(msg));
-		String comm="SELECT i.Tiles FROM InGame i WHERE Username='"+user+"' AND GID="+game+";";
+		String comm="SELECT i.Tiles FROM InGame i WHERE Username="+user+" AND GID="+game+";";
 		
 		ResultSet rs = stmt.executeQuery( comm );
 		
@@ -444,8 +442,8 @@ public class Server {
 		String user=extractUsername(msg);
 		String game=extractUsername(trimUA(msg));
 		
-		String comm="UPDATE InGame SET Tiles='"+extractUsername(newTiles)+
-				"' WHERE Username='"+user+"' AND GID="+game+";";
+		String comm="UPDATE InGame SET Tiles="+extractUsername(newTiles)+
+				" WHERE Username="+user+" AND GID="+game+";";
 		
 		stmt.executeUpdate(comm);
 		c.commit();
