@@ -1,5 +1,0 @@
-INDEX VERSION 1.127+C:\Users\Anissa\Documents\College\Juniper\Second Semester\Intro_Comp_Networks\Scrabble\Scrabble\.metadata\.plugins\org.eclipse.jdt.core
-1739354438.index
-4285194842.index
-3333798737.index
-4090150999.index

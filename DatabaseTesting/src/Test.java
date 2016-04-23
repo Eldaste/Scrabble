@@ -12,11 +12,19 @@ public class Test {
 	      System.out.println("Opened database successfully");
 
 	      stmt = c.createStatement();
-	      String sql = "CREATE TABLE Users " +
+	      /*String sql = "CREATE TABLE Users " +
 	                   "(Username Text PRIMARY KEY," +
 	                   " AuthToken      TEXT    NOT NULL, " + 
 	                   " Score          INT)"; 
-	      stmt.executeUpdate(sql);
+	      stmt.executeUpdate(sql);*/
+	      
+	      ResultSet rs = stmt.executeQuery( "SELECT Username,'Blarg' FROM Users WHERE Username='t';" );
+	      System.out.println(rs.getMetaData().getColumnCount());
+	      //while ( rs.next() ) {
+	         System.out.println( "SALARY = " + rs.getInt(1) );
+	         System.out.println();
+	     // }
+	      rs.close();
 	      stmt.close();
 	      c.close();
 	    } catch ( Exception e ) {
