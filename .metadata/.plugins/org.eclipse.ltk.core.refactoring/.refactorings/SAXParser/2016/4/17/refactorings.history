@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename compilation unit &apos;parsed.SAXParser.java&apos; to &apos;SAXParseHandler.java&apos;&#x0D;&#x0A;- Original project: &apos;SAXParser&apos;&#x0D;&#x0A;- Original element: &apos;parsed.SAXParser.java&apos;&#x0D;&#x0A;- Renamed element: &apos;parsed.SAXParseHandler.java&apos;" description="Rename compilation unit &apos;SAXParser.java&apos;" flags="2" id="org.eclipse.jdt.ui.rename.compilationunit" input="/src&lt;parsed{SAXParser.java" name="SAXParseHandler.java" references="false" stamp="1461018947880" version="1.0"/>
-</session>
