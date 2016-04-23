@@ -1,0 +1,12 @@
+package Threads;
+
+import java.net.Socket;
+
+import mainsrv.Server;
+
+public class Worker extends Thread {
+
+	public Worker(Socket newcon, Server jj) {
+		// TODO Auto-generated constructor stub
+	}
+}

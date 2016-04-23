@@ -1,0 +1,372 @@
+package mainsrv;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.security.SecureRandom;
+import java.sql.*;
+import java.util.ArrayList;
+
+import Threads.Worker;
+
+public class Server {
+	public static final int PORT=8080;
+	public static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	public static final int DEFAULTAUTHLENGTH=20;
+	public static final String GAMEDB="Srs.db";
+	
+	static SecureRandom rnd = new SecureRandom();
+	
+	Connection c = null;
+    Statement stmt = null;
+    ServerSocket s=null;
+
+    public static int o=0;
+    
+	public static void main(String[] args) {
+		try {
+			new Server();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Server() throws ClassNotFoundException, SQLException, IOException{
+			
+		    Class.forName("org.sqlite.JDBC");
+		    c = DriverManager.getConnection("jdbc:sqlite:"+GAMEDB);
+		    System.out.println("Opened database successfully");
+		    
+		    s=new ServerSocket(PORT);
+		    System.out.println("Opened server successfully");
+		    
+		    stmt = c.createStatement();
+		    
+		    while(true){
+		    	o=1;
+		    	Socket newcon=s.accept();
+			
+		    	System.out.println("New connection from: "+newcon.getInetAddress().getHostAddress());
+		    	Worker w=new Worker(newcon,this);
+		    	w.start();
+			}
+		    
+		    //String sql = ""; 
+		    //stmt.executeUpdate(sql);
+		  }
+	
+	public boolean validate(int[] test) throws SQLException{
+		String comm="SELECT COUNT(Username) FROM Users WHERE Username=";
+		int i=0;
+		StringBuffer sb=new StringBuffer();
+		
+		while(test[i]!=0){
+			sb.append((char)test[i]);
+			i++;
+		}
+		
+		i++;
+		
+		comm+=sb.toString()+" AND AuthToken=";
+		
+		sb=new StringBuffer();
+		
+		for(;i<test.length;i++){
+			if(test[i]==0)
+				break;
+			sb.append((char)test[i]);
+		}
+		
+		comm+=sb.toString()+";";
+		
+		ResultSet rs=stmt.executeQuery(comm);
+		boolean res=(0==rs.getInt(1));
+		
+		rs.close();
+		
+		return (!res);
+	}
+
+	public void terminate(){
+		
+		try {
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	    try {
+			c.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	    try {
+			s.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	    
+	    System.out.println("Toodles");
+	    System.exit(0);
+	}
+
+	public boolean userExists(int[] test) throws SQLException {
+		String comm="SELECT COUNT(Username) FROM Users WHERE Username="+extractUsername(test)+";";
+		
+		ResultSet rs=stmt.executeQuery(comm);
+		boolean res=(0==rs.getInt(1));
+		
+		rs.close();
+		
+		return (!res);
+	}
+
+	public int[] createUser(int[] msg) throws SQLException {
+		int[] auth=new int[DEFAULTAUTHLENGTH];
+		String token=randomString(DEFAULTAUTHLENGTH);
+		
+		for(int i=0; i<DEFAULTAUTHLENGTH;i++){
+			auth[i]=token.charAt(i);
+		}
+
+		String comm="INSERT INTO Users (Username,AuthToken) VALUES("+extractUsername(msg)+","+token+");";
+		
+		stmt.executeUpdate(comm);
+		
+		return auth;
+	}
+	
+	public String randomString( int len ){
+		   StringBuilder sb = new StringBuilder( len );
+		   for( int i = 0; i < len; i++ ) 
+		      sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+		   return sb.toString();
+		}
+	
+	public int[] alterPass(int[] msg) throws SQLException {
+		int[] trimmsg=trimUA(msg);
+		
+		if(trimmsg.length==0)
+			return new int[]{0xFF};
+		
+		StringBuffer sb=new StringBuffer();
+		
+		int i=0;
+		for(;i<msg.length&&msg[i]!=0;i++);
+		i++;
+		for(;i<msg.length;i++){
+			if(msg[i]==0)
+				break;
+			sb.append((char)msg[i]);
+		}
+		
+		String comm="UPDATE Users SET AuthToken="+sb.toString()+"WHERE Username="+extractUsername(msg)+";";
+		
+		stmt.executeUpdate(comm);
+		
+		return new int[]{0x00};
+	}
+	
+	public int[] trimUA(int[] msg) {
+		int i=0;
+		for(;i<msg.length&&msg[i]!=0;i++);
+		i++;
+		for(;i<msg.length&&msg[i]!=0;i++);//set i=2nd instance of 0 in the arr
+		i++;
+		
+		int[] fin;
+		if(i>=msg.length)
+			fin=new int[0];
+		else
+			fin=new int[msg.length-i];
+		
+		for(int p=0;i<msg.length;i++,p++){
+			fin[p]=msg[i];
+		}
+		
+		return fin;
+	}
+
+	public String extractUsername(int[] test){
+		StringBuffer sb=new StringBuffer();
+		
+		for(int i=0;i<test.length;i++){
+			if(test[i]==0)
+				break;
+			sb.append((char)test[i]);
+		}
+		
+		return sb.toString();
+	}
+
+	public int[] gameList(int[] msg) throws SQLException {
+		String comm="SELECT g.Name,g.GID FROM Game g,InGame i WHERE i.GID=g.GID AND i.Username="+extractUsername(msg)+";";
+		ResultSet rs = stmt.executeQuery( comm );
+		int totallen=0;
+		ArrayList<int[]> taco=new ArrayList<int[]>();
+		
+	    while ( rs.next() ) {
+	    	String st=rs.getString("Name");
+	    	String nu=Integer.toString(rs.getInt("GID"));
+
+	    	int[] curr=new int[st.length()+nu.length()+1];
+	    	totallen+=curr.length+1;
+	    	
+	    	int i=0;
+	    	for(;i<st.length();i++){
+	    		curr[i]=st.charAt(i);
+	    	}
+	    	
+	    	curr[i]=0;
+	    	i++;
+	    	
+	    	for(int j=0;j<nu.length();j++,i++){
+	    		curr[i]=nu.charAt(j);
+	    	}
+	    	
+	    	taco.add(curr);
+	    }
+	    rs.close();
+	    
+	    int[] fin=new int[totallen+1];
+	    fin[0]=taco.size();
+	    int tt=1;
+	    
+	    for(int[] flarb:taco){
+	    	fin[tt]=flarb.length;
+	    	tt++;
+	    	
+	    	for(int i=0;i<flarb.length;i++,tt++){
+	    		fin[tt]=flarb[i];
+	    	}
+	    }
+		
+		return fin;
+	}
+
+	public int[] gameSeekList(int[] msg) throws SQLException {
+		String comm="SELECT g.Name,g.GSID FROM GameSeek g,Seeking i WHERE i.GSID=g.GSID AND i.Username="+extractUsername(msg)+";";
+		ResultSet rs = stmt.executeQuery( comm );
+		int totallen=0;
+		ArrayList<int[]> taco=new ArrayList<int[]>();
+		
+	    while ( rs.next() ) {
+	    	String st=rs.getString("Name");
+	    	String nu=Integer.toString(rs.getInt("GSID"));
+
+	    	int[] curr=new int[st.length()+nu.length()+1];
+	    	totallen+=curr.length+1;
+	    	
+	    	int i=0;
+	    	for(;i<st.length();i++){
+	    		curr[i]=st.charAt(i);
+	    	}
+	    	
+	    	curr[i]=0;
+	    	i++;
+	    	
+	    	for(int j=0;j<nu.length();j++,i++){
+	    		curr[i]=nu.charAt(j);
+	    	}
+	    	
+	    	taco.add(curr);
+	    }
+	    rs.close();
+	    
+	    int[] fin=new int[totallen+1];
+	    fin[0]=taco.size();
+	    int tt=1;
+	    
+	    for(int[] flarb:taco){
+	    	fin[tt]=flarb.length;
+	    	tt++;
+	    	
+	    	for(int i=0;i<flarb.length;i++,tt++){
+	    		fin[tt]=flarb[i];
+	    	}
+	    }
+		
+		return fin;
+	}
+
+	public int[] getBoard(int[] msg) throws SQLException {
+		String comm="SELECT t.Boardstate FROM Turn t WHERE t.GID="+new String(extractUsername(trimUA(msg)))
+				+"AND NOT EXISTS(SELECT * FROM Turn b WHERE b.TurnNum>a.TurnNum);";
+		
+		ResultSet rs = stmt.executeQuery( comm );
+		
+		String bs=rs.getString("Boardstate");
+		
+		rs.close();
+		
+		return byteToInt(bs.getBytes());
+	}
+
+	public int[] byteToInt(byte[] bytes) {
+		int[] res=new int[bytes.length];
+		
+		for(int i=0;i>res.length;i++){
+			res[i]=bytes[i];
+		}
+		
+		return res;
+	}
+
+	public int[] getPlayers(int[] msg) throws SQLException {
+		String comm="SELECT i.Username FROM InGame i WHERE i.GID="+new String(extractUsername(trimUA(msg)))
+				+"ORDER BY TurnNum;";
+		
+		ResultSet rs = stmt.executeQuery( comm );
+		int totallen=0;
+		ArrayList<int[]> taco=new ArrayList<int[]>();
+		
+	    while ( rs.next() ) {
+	    	String tem=rs.getString("Username");
+	    	totallen+=tem.length()+1;
+	    	taco.add(byteToInt(tem.getBytes()));
+	    }
+	    
+	    rs.close();
+	    
+	    int[] fin=new int[totallen+1];
+	    fin[0]=taco.size();
+	    int tt=1;
+	    
+	    for(int[] flarb:taco){
+	    	for(int i=0;i<flarb.length;i++,tt++){
+	    		fin[tt]=flarb[i];
+	    	}
+	    	fin[tt]=0;
+	    	tt++;
+	    }
+		
+		return fin;
+	}
+
+	public int[] newTile(int[] msg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int[] getTiles(int[] msg) {
+		String user=extractUsername(msg);
+		String game=extractUsername(trimUA(msg));
+		String comm="SELECT i.Tiles FROM InGame i WHERE Username="+user+" AND GID="+game+";";
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int[] returnTile(int[] msg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
+
+
