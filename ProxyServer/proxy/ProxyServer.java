@@ -12,15 +12,7 @@ public class ProxyServer {
 	final static String WORDS_FILENAME = "allwords.txt";
 
 	@SuppressWarnings("resource")
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		try (BufferedReader br = new BufferedReader(new FileReader(WORDS_FILENAME))) {
-		    String line;
-		    while ((line = br.readLine()) != null) {
-		    	line.trim();
-		    	if (line.startsWith("z"))
-		    		System.out.println(line);;
-		    }
-		}
+	public static void main(String[] args){
 		try {
 			System.out.println("Starting proxy server for " + host + ":" + remoteport + " on port " + localport);
 			ServerSocket serverSocket = new ServerSocket(localport);

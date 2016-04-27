@@ -2,6 +2,7 @@ package proxy;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -15,6 +16,7 @@ import proxy.ProxyServer;
 public class PlayerThread extends Thread {
 	private ProxyServer server;
 	private Socket socket;
+	final static String WORDS_FILENAME = "allwords.txt";
 	private static final Logger Log = Logger.getLogger(Thread.currentThread().getStackTrace()[0].getClassName());
 
 	public PlayerThread(ProxyServer playerServer, Socket proxySocket) {
@@ -25,17 +27,17 @@ public class PlayerThread extends Thread {
 	public void run() {
 		Log.info("Running new thread for client.");
 		DataOutputStream out = null;
-		BufferedReader br = null;
+		BufferedReader br, fr = null;
 		try {
 			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			fr = new BufferedReader(new FileReader(WORDS_FILENAME));
 			out = new DataOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
 			Log.severe("Some issue with making IO Objects");
 			return;
 		}
-		String line;
+		String line, word;
 		try {
-			Scanner scanner = new Scanner("allwords.txt");
 			while (true) {
 				try {
 					line = br.readLine();
@@ -44,15 +46,16 @@ public class PlayerThread extends Thread {
 						socket.close();
 						return;
 					} else { // read word & check if legit
-						line = line.trim(); // remove all leading and trailing
-											// white space
+						line = line.trim(); // remove white space
 						Log.info("PlayerThread, run() - reading socket: " + line);
-
-						if (exists(line)) {
-							out.writeBytes(line + "\n\r");
-						} else {
-
-						}
+						while ((word = fr.readLine()) != null) {
+					    	word.trim();
+					    	if (word.equals(line)) {
+					    		out.writeBoolean(true);	// word exists
+					    	} else {
+					    		out.writeBoolean(false);
+					    	}		
+					    }
 						out.flush();
 					}
 				} catch (IOException e) {
@@ -145,9 +148,6 @@ public class PlayerThread extends Thread {
 		{
 			e.printStackTrace();
 		}
-	}
-	public boolean exists(String line) {
-		return 
 	}
 
 }
