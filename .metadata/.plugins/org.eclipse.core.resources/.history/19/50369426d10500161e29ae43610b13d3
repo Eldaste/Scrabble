@@ -1,0 +1,18 @@
+package parsed;
+
+import java.util.ArrayList;
+
+public class Word {
+	/*
+	 * Instance Variable Declarations  
+	 */
+	private String word;
+	private ArrayList<String> wordDefintions;
+	
+	/*
+	 * Constructor 
+	 * Word Object 
+	 * 
+	 */
+
+}

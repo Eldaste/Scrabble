@@ -14,6 +14,7 @@ import java.awt.GridLayout;
 public class main extends JFrame {
 	
 	final int MAX_TILES = 7;
+	final int BOARD_TILES = 15;
 	private JPanel contentPane;
 	private JPanel PlayerN;
 	private JPanel PlayerW;
@@ -66,6 +67,7 @@ public class main extends JFrame {
 	    //We create a sub-panel. Notice, that we don't use any layout-manager,
 	    //Because we want it to use the default FlowLayout
 	    PlayerW = new JPanel();
+	    PlayerW.setLayout(new BoxLayout(PlayerW, BoxLayout.Y_AXIS));
 	    
 	    JLabel westNumOfTiles = new JLabel("#ofTiles: " + MAX_TILES);
 	    JLabel westScore = new JLabel("Score:" + 0);
@@ -81,6 +83,7 @@ public class main extends JFrame {
 	    //We create a sub-panel. Notice, that we don't use any layout-manager,
 	    //Because we want it to use the default FlowLayout
 	    PlayerE = new JPanel();
+	    PlayerE.setLayout(new BoxLayout(PlayerE, BoxLayout.Y_AXIS));
 	    
 	    JLabel eastNumOfTiles = new JLabel("#ofTiles: " + MAX_TILES);
 	    JLabel eastScore = new JLabel("Score:" + 0);
@@ -96,7 +99,7 @@ public class main extends JFrame {
 	    //We create a sub-panel. Notice, that we don't use any layout-manager,
 	    //Because we want it to use the default FlowLayout
 	    PlayerS = new JPanel();
-	    PlayerS.setLayout(new BoxLayout(PlayerS, BoxLayout.X_AXIS));
+	    PlayerS.setLayout(new BoxLayout(PlayerS, BoxLayout.Y_AXIS));
 	    
 	    JLabel southNumOfTiles = new JLabel("#ofTiles: " + MAX_TILES);
 	    JLabel southScore = new JLabel("Score:" + 0);
@@ -126,7 +129,38 @@ public class main extends JFrame {
 	    }
 	    
 	    PlayerS.add(tileArray);
-
+	    
+	    JPanel BOARD = new JPanel();
+	    BOARD.setLayout(new GridLayout(BOARD_TILES,BOARD_TILES));
+	    
+	    JButton [][] myBoard = new JButton[BOARD_TILES][BOARD_TILES];
+	    
+	    for(int i = 0; i < BOARD_TILES; i++)
+	    {
+	    	for(int j = 0; j < BOARD_TILES; j++)
+		    {
+	    		myBoard[i][j] = new JButton("");
+		    }
+	    }
+	    
+	    for(int i = 0; i < BOARD_TILES; i = i+7)
+	    {
+	    	for(int j = 0; j < BOARD_TILES; j = j+7)
+		    {
+	    		myBoard[i][j].setText("3x WS");
+		    }
+	    }
+	    
+	    
+	    for(int i = 0; i < BOARD_TILES; i++)
+	    {
+	    	for(int j = 0; j < BOARD_TILES; j++)
+		    {
+	    		BOARD.add(myBoard[i][j]);
+		    }
+	    }
+	    
+	    contentPane.add(BOARD, BorderLayout.CENTER);
 	}
 
 }
