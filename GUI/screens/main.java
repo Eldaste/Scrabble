@@ -10,9 +10,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
+import java.util.Arrays;
 
 public class main extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	final int MAX_TILES = 7;
 	final int BOARD_TILES = 15;
 	private JPanel contentPane;
@@ -143,13 +148,18 @@ public class main extends JFrame {
 		    }
 	    }
 	    
-	    for(int i = 0; i < BOARD_TILES; i = i+7)
+	    for(int i = 0; i < BOARD_TILES; i = i++)
 	    {
-	    	for(int j = 0; j < BOARD_TILES; j = j+7)
+	    	for(int j = 0; j < BOARD_TILES; j = j++)
 		    {
-	    		myBoard[i][j].setText("3x WS");
+	    		if(Arrays.asList(0,7,14).contains(i) && (j % 7 == 0))
+	    		{
+	    			myBoard[i][j].setText("3x WS");
+	    		}
+	    		
 		    }
 	    }
+	    
 	    
 	    
 	    for(int i = 0; i < BOARD_TILES; i++)
