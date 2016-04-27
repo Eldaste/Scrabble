@@ -21,15 +21,15 @@ public class ProxyServer {
 			byte[] reply = new byte[4096];
 			
 			while(true) {
-				Socket client = null, server = null;
-				client = serverSocket.accept();
+				Socket clientSocket = null, dictionarySocket = null;
+				clientSocket = serverSocket.accept();
 				Log.info("Accepted server socket for client on local port.");
 				// make input streams
-				final InputStream fromClient = client.getInputStream();
-				final OutputStream toClient = client.getOutputStream();
+				final InputStream fromClient = clientSocket.getInputStream();
+				final OutputStream toClient = clientSocket.getOutputStream();
 				
-				try {
-					server = new Socket(host, remoteport);
+				try { // make socket for the English Open Word List txt file
+					dictionarySocket = new Socket(host, remoteport);
 					Log.info("Successfully connected to server.");
 				} catch (IOException e) {
 					PrintWriter out = new PrintWriter(toClient);
@@ -40,8 +40,8 @@ public class ProxyServer {
 				}
 				
 				// make server streams
-				final InputStream fromServer = server.getInputStream();
-				final OutputStream toServer = server.getOutputStream();
+				final InputStream fromServer = dictionarySocket.getInputStream();
+				final OutputStream toServer = dictionarySocket.getOutputStream();
 				
 			}
 			
