@@ -1,0 +1,146 @@
+package Threads;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.sql.SQLException;
+
+import mainsrv.Server;
+
+public class Worker extends Thread {
+	
+	private Socket inte;
+	private Server serv;
+
+	public Worker(Socket newcon, Server jj) {
+		inte=newcon;
+		serv=jj;
+	}
+	
+	public void run(){
+		try {
+			InputStream i=inte.getInputStream();
+			OutputStream o=inte.getOutputStream();
+			
+			loop:while(true){
+				if(inte.isClosed())
+					break loop;
+				
+				int c=i.read();
+				int[] msg=recoverMsg(i);
+				
+				int[] outgoing={0xFF};
+				
+				try{
+				switch(c){
+					case 0x00:	if(serv.validate(msg))
+									outgoing[0]=0x00;
+								break;
+					case 0x01:	if(serv.userExists(msg))
+									outgoing=serv.createUser(msg);
+								break;
+					case 0x02:  if(serv.validate(msg))
+									outgoing=serv.alterPass(msg);
+								break;
+					case 0x10:	if(serv.validate(msg))
+									outgoing=serv.gameList(msg);
+								break;
+					case 0x12:	if(serv.validate(msg))
+									outgoing=serv.gameSeekList(msg,false);
+								break;
+					case 0x13:	if(serv.validate(msg))
+									outgoing=serv.gameSeekList(msg,true);
+								break;
+					case 0x20:	if(serv.validate(msg))
+									outgoing=serv.makeNewGame(msg);
+								break;
+					case 0x21:	if(serv.validate(msg))
+									outgoing=serv.joinGame(msg);
+								break;
+					case 0x22:	if(serv.validate(msg))
+									outgoing=serv.getPlayersInSeek(msg);
+								break;
+					case 0x30:	if(serv.validate(msg))
+									outgoing=serv.getBoard(msg);
+								break;
+					case 0x31:	if(serv.validate(msg))
+									outgoing=serv.getPlayers(msg);
+								break;
+					case 0x32:	if(serv.validate(msg))
+									outgoing=serv.getTiles(msg);
+								break;
+					case 0x33:	if(serv.validate(msg))
+									outgoing=serv.newTile(msg);
+								break;
+					case 0x34:	if(serv.validate(msg))
+									outgoing=serv.returnTile(msg);
+								break;
+					case 0x35:	if(serv.validate(msg))
+									if(serv.returnTile(msg)[0]!=0xFF)
+										outgoing=serv.newTile(msg);	
+								break;
+					case 0x36:	if(serv.validate(msg))
+									outgoing=serv.makeMove(msg,false);
+								break;
+					case 0x37:	if(serv.validate(msg))
+									outgoing=serv.getCurrPlayer(msg);
+								break;
+					case 0x38:	if(serv.validate(msg))
+									outgoing=serv.getPoints(msg);
+								break;
+					default:	break;
+				}}
+				catch (SQLException e) {e.printStackTrace();} 
+				
+				o.write(c);
+				sendMsg(outgoing,o);
+			}
+		} catch (IOException e) {/*e.printStackTrace();*/} 
+		finally{
+			System.out.println("Client Diconnected ");
+			try {
+				inte.close();
+			} 
+			catch (IOException e) {}
+		}
+	}
+
+	public int[] recoverMsg(InputStream i) throws IOException{
+		int msglen=0;
+		
+		ll:while(true){
+			int b=i.read();
+			
+			if(b==0){
+				msglen+=255;
+				continue ll;
+			}
+			
+			msglen+=b;
+			break ll;
+		}
+		
+		int [] re=new  int[msglen];
+		
+		for(int ii=0;ii<msglen;ii++){
+			re[ii]=i.read();
+		}
+		
+		return re;
+	}
+
+	public void sendMsg(int[] outgoing,OutputStream o) throws IOException{
+		int kk=outgoing.length;
+		
+		for(;kk>255;kk-=255){
+			o.write(0x00);
+		}
+		
+		o.write(kk);
+		
+		for(int ii=0;ii<outgoing.length;ii++){
+			o.write(outgoing[ii]);
+		}
+	}
+}

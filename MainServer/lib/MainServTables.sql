@@ -73,7 +73,7 @@ CREATE TRIGGER GameSeektoGame
 			MainServTables.sql  */
 		
 		INSERT INTO Game
-		SELECT a.GID+1,c.Name,'GGIUGWDIQDGUICVQWIOVJOWQDKWQNDQ'
+		SELECT a.GID+1,c.Name,'EEEEEEEEEEEEAAAAAAAAAIIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTTLLLLSSSSUUUUDDDDGGGBBCCMMPPFFHHVVWWYYKJXQZ   '
 		FROM Game a,GameSeek c
 		WHERE c.GSID=new.GSID AND
 			NOT EXISTS(SELECT * FROM Game b WHERE b.GID>a.GID);
@@ -97,6 +97,13 @@ CREATE TRIGGER GameSeektoGame
 
 		DELETE FROM GameSeek
 		WHERE GSID=new.GSID;
+
+		INSERT INTO Turn
+		SELECT a.GID,0,0,'',
+			'                                                                                                                                                                                                                                 '
+			,null
+		FROM Game a
+		WHERE NOT EXISTS(SELECT * FROM Game b WHERE b.GID>a.GID);
 
 	END;
 

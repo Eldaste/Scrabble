@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
-
 import Threads.Worker;
 
 public class Server {
@@ -14,6 +13,7 @@ public class Server {
 	public static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 	public static final int DEFAULTAUTHLENGTH=20;
 	public static final String GAMEDB="Srs.db";
+	public static final boolean AUTOINCPOINTS=true;
 	
 	static SecureRandom rnd = new SecureRandom();
 	
@@ -271,9 +271,10 @@ public class Server {
 		return fin;
 	}
 
-	public int[] gameSeekList(int[] msg) throws SQLException {
-		String comm="SELECT g.Name,g.GSID FROM GameSeek g,Seeking i WHERE i.GSID=g.GSID AND i.Username='"
-				+extractUsername(msg)+"';";
+	public int[] gameSeekList(int[] msg, boolean allGames) throws SQLException {
+		String comm="SELECT g.Name,g.GSID FROM GameSeek g";
+		if(!allGames)
+				comm+=",Seeking i WHERE i.GSID=g.GSID AND i.Username='"+extractUsername(msg)+"';";
 		ResultSet rs = stmt.executeQuery( comm );
 		int totallen=0;
 		ArrayList<int[]> taco=new ArrayList<int[]>();
@@ -341,7 +342,7 @@ public class Server {
 	}
 
 	public int[] getPlayers(int[] msg) throws SQLException {
-		String comm="SELECT i.Username FROM InGame i WHERE i.GID="+new String(extractUsername(trimUA(msg)))
+		String comm="SELECT i.Username FROM InGame i WHERE i.GID="+extractUsername(trimUA(msg))
 				+" ORDER BY TurnNum;";
 		
 		ResultSet rs = stmt.executeQuery( comm );
@@ -451,6 +452,198 @@ public class Server {
 		c.commit();
 		
 		return new int[]{0x00};
+	}
+
+	
+	public int[] makeNewGame(int[] msg) throws SQLException {
+		int [] msgc=trimUA(msg);
+		String numplay=extractUsername(msgc);
+		String gname=extractUsername(trimSingle(msgc));
+		
+		String comm="INSERT INTO GameSeek SELECT a.GSID+1, "+numplay+", '"+gname+"' FROM GameSeek a "
+				+ "WHERE NOT EXISTS(SELECT * FROM GameSeek b WHERE b.GSID>a.GSID);";
+		
+		stmt.executeUpdate(comm);
+		
+		comm="INSERT INTO Seeking SELECT a.GSID, '"+extractUsername(msg)+"' FROM GameSeek a "
+				+ "WHERE NOT EXISTS(SELECT * FROM GameSeek b WHERE b.GSID>a.GSID);";
+		
+		stmt.executeUpdate(comm);
+		
+		c.commit();
+		
+		comm="SELECT a.GSID FROM GameSeek a WHERE NOT EXISTS(SELECT * FROM GameSeek b WHERE b.GSID>a.GSID);";
+		
+		ResultSet rs = stmt.executeQuery( comm );
+		
+		String res=Integer.toString(rs.getInt("GSID"));
+		
+		rs.close();
+
+		return byteToInt(res.getBytes());
+	}
+
+	public int[] joinGame(int[] msg) throws SQLException {
+		String comm="INSERT INTO Seeking VALUES "+extractUsername(trimUA(msg))+", '"+extractUsername(msg)+"';";
+		
+		stmt.executeUpdate(comm);
+		c.commit();
+		
+		return new int[]{0};
+	}
+
+	public int[] getPlayersInSeek(int[] msg) throws SQLException {
+		String comm="SELECT COUNT(a.Username) AS numPlayers, b.Players FROM GameSeek b,Seeking a"
+				+ " WHERE b.GSID="+extractUsername(trimUA(msg))+" AND b.GSID=a.GSID";
+		
+		ResultSet rs = stmt.executeQuery( comm );
+		
+		String res=Integer.toString(rs.getInt("numPlayers"));
+		String res2=Integer.toString(rs.getInt("Players"));
+		
+		rs.close();
+		
+		int[] fin=new int[res.length()+res2.length()+1];
+		int i=0;
+		
+		for(int j=0;j<res.length();j++,i++){
+			fin[i]=res.charAt(j);
+		}
+		
+		fin[i]=0;
+		i++;
+		
+		for(int j=0;j<res.length();j++,i++){
+			fin[i]=res2.charAt(j);
+		}
+		
+		return fin;
+	}
+
+	
+	public int[] makeMove(int[] msg,boolean autoRemoveTiles) throws SQLException {
+		int[] tmp=trimUA(msg);
+		String gNum=extractUsername(tmp);
+		tmp=trimSingle(tmp);
+		String Pts=extractUsername(tmp);
+		tmp=trimSingle(tmp);
+		String tilesUsd=null;
+		if(autoRemoveTiles){
+			tilesUsd=extractUsername(tmp);
+			tmp=trimSingle(tmp);
+		}
+		String word=extractUsername(tmp);
+		tmp=trimSingle(tmp);
+		String state=extractUsername(tmp);
+		
+		if(autoRemoveTiles){
+			String uname=extractUsername(msg);
+			int[] kk=new int[tilesUsd.length()+2+uname.length()];
+			
+			int i=0;			
+			for(int j=0;j<uname.length();j++,i++)
+				kk[i]=uname.charAt(j);
+			
+			kk[i]=0;
+			i++;
+			kk[i]=0;
+			i++;
+			
+			for(int j=0;j<tilesUsd.length();j++,i++)
+				kk[i]=tilesUsd.charAt(j);
+			
+			returnTile(kk);
+		}
+		
+		String comm;
+		
+		if(AUTOINCPOINTS){
+			comm="SELECT Score FROM InGame WHERE Username='"+extractUsername(msg)+"' AND GID="+ gNum +";";
+			ResultSet rs = stmt.executeQuery( comm );
+			
+			int res=rs.getInt("Score");
+			
+			rs.close();
+			
+			res+=Integer.parseInt(Pts);
+			
+			comm="UPDATE InGame SET Score="+Integer.toString(res)+" "
+					+ "WHERE Username='"+extractUsername(msg)+"' AND GID="+ gNum +";";
+			
+			stmt.executeUpdate(comm);
+		}
+		
+		comm="INSERT INTO Turn SELECT "+gNum+", a.TurnNum+1 , "+Pts+", '"+word+"', '"+state+"',"
+				+ " Player='"+extractUsername(msg)+"'"
+				+ " FROM Turn a WHERE NOT EXISTS(SELECT * FROM Turn b WHERE b.TurnNum >a.TurnNum );";
+		
+		stmt.executeUpdate(comm);
+		c.commit();
+
+		return new int[]{0};
+	}
+
+	public int[] getCurrPlayer(int[] msg) throws SQLException {
+		String gNum=extractUsername(trimUA(msg));
+		
+		String comm="SELECT a.TOrder FROM InGame a, Turn c "
+				+ "WHERE NOT EXISTS(SELECT * FROM Turn d WHERE d.TurnNum >c.TurnNum ) AND c.Username=a.Username "
+				+ "AND c.GID="+gNum+" AND c.GID=a.GID;";
+		
+		int ans,nump=0;
+		
+		ResultSet rs;
+		
+		try {
+			rs = stmt.executeQuery( comm );
+			
+			ans=rs.getInt("TOrder");
+			
+			rs.close();
+		} catch (SQLException e) {
+			//If no players have taken a turn			
+			ans=0;
+		}			
+		
+		comm="SELECT i.Username FROM InGame i WHERE i.GID="+gNum+" ORDER BY TurnNum;";
+		
+		rs = stmt.executeQuery( comm );
+
+		ArrayList<String> taco=new ArrayList<String>();
+		
+	    while ( rs.next() ) {
+	    	taco.add(rs.getString("Username"));
+	    	nump++;
+	    }
+	    
+	    rs.close();
+	    
+	    if(nump==0)
+	    	return new int[]{0xFF};
+	    
+		ans+=1;
+		ans%=nump;
+		if(ans!=0)
+			ans--;	
+		
+		return byteToInt(taco.get(ans).getBytes());
+	}
+
+	public int[] getPoints(int[] msg) throws SQLException {
+		int[] tmp=trimUA(msg);
+		String gNum=extractUsername(tmp);
+		tmp=trimSingle(tmp);
+		String user=extractUsername(tmp);
+		
+		String comm="SELECT Score FROM InGame WHERE GID="+gNum+" AND Username='"+user+"';";
+		
+		ResultSet rs = stmt.executeQuery( comm );
+		
+		String ans=Integer.toString(rs.getInt("Score"));
+		
+		rs.close();
+		
+		return byteToInt(ans.getBytes());
 	}
 
 }

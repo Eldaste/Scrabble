@@ -21,7 +21,7 @@ public class Test {
 	      ResultSet rs = stmt.executeQuery( "SELECT Username,'Blarg' FROM Users WHERE Username='t';" );
 	      System.out.println(rs.getMetaData().getColumnCount());
 	      //while ( rs.next() ) {
-	         System.out.println( "SALARY = " + rs.getInt(1) );
+	         System.out.println( "SALARY = " + rs.getString("Username") );
 	         System.out.println();
 	     // }
 	      rs.close();

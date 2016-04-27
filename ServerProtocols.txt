@@ -16,7 +16,13 @@ Define:[UA] as Username[00]AuthToken[00]
 	0 Get game list|[UA]|[NumGames]([Size of Game Resp][Game Name][00][GameNum (in String Form)])* or [FF]
 	1 
 	2 Get Searching List|[UA]|[NumGames]([Size of Game Resp]Game Name[00][GameNum])* or [FF]
+	3 Get all GameSeek|[UA]|[NumGames]([Size of Game Resp]Game Name[00][GameNum])*
 	
+2: GameSeek Codes
+	0 Make new Game|[UA]Num Players[00]Name|GameSNum
+	1 Join Game|[UA]GameSNum|[00]
+	2 Get num players in GameSeek|[UA][GameSNum|NumPlayrs[00]MaxPlayers
+
 3: Game Codes
 	0 Get Board|[UA][Game Num(GN) in String Form]|Flattened 2-D array for the board
 	1 Get Player Nums|[UA][GN]|[Players]Player Name[00]...
@@ -24,3 +30,7 @@ Define:[UA] as Username[00]AuthToken[00]
 	3 Get New Tile|[UA][GN]|[Tile]
 	4 Retun Tile|[UA][GN][00][Tile]*|[00]
 	5 Swp Tiles|[UA][GN][00][Tile]*|[Tile]
+	6 Make Move|[UA][GN][00]Points[00]WordPlayed[00]BoardState[00]|[00]
+	7 Current Player|[UN][GN]|Player
+	8 GetPoints|[UA][GN][00]Username to get Points for|Points
+	9 Make Move and Get rid of tiles used|[UA][GN][00]Points[00]TilesUsed[00]WordPlayed[00]BoardState[00]|[00]

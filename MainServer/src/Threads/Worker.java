@@ -47,7 +47,19 @@ public class Worker extends Thread {
 									outgoing=serv.gameList(msg);
 								break;
 					case 0x12:	if(serv.validate(msg))
-									outgoing=serv.gameSeekList(msg);
+									outgoing=serv.gameSeekList(msg,false);
+								break;
+					case 0x13:	if(serv.validate(msg))
+									outgoing=serv.gameSeekList(msg,true);
+								break;
+					case 0x20:	if(serv.validate(msg))
+									outgoing=serv.makeNewGame(msg);
+								break;
+					case 0x21:	if(serv.validate(msg))
+									outgoing=serv.joinGame(msg);
+								break;
+					case 0x22:	if(serv.validate(msg))
+									outgoing=serv.getPlayersInSeek(msg);
 								break;
 					case 0x30:	if(serv.validate(msg))
 									outgoing=serv.getBoard(msg);
@@ -66,7 +78,20 @@ public class Worker extends Thread {
 								break;
 					case 0x35:	if(serv.validate(msg))
 									if(serv.returnTile(msg)[0]!=0xFF)
-										outgoing=serv.newTile(msg);		
+										outgoing=serv.newTile(msg);	
+								break;
+					case 0x36:	if(serv.validate(msg))
+									outgoing=serv.makeMove(msg,false);
+								break;
+					case 0x37:	if(serv.validate(msg))
+									outgoing=serv.getCurrPlayer(msg);
+								break;
+					case 0x38:	if(serv.validate(msg))
+									outgoing=serv.getPoints(msg);
+								break;
+					case 0x39:	if(serv.validate(msg))
+									outgoing=serv.makeMove(msg,true);
+								break;
 					default:	break;
 				}}
 				catch (SQLException e) {e.printStackTrace();} 
