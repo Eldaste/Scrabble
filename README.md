@@ -1,7 +1,6 @@
 # Scrabble
 For Networks
 
-
 Milo Wimmer 
 Selina Chen
 Anissa Alexander
@@ -29,4 +28,13 @@ Chat room
 Mini games (waiting for other players)
 Crossword puzzles
 Synonyms multi-choice 
+
+COPYRIGHT INFO (more in-depth can be found in folder 'Copyright Info'):
+http://dreamsteep.com/projects/53-the-english-open-word-list-eowl.html
+
+The “English Open Word List” (EOWL) was developed by Ken Loge, but is almost entirely derived from the “UK Advanced Cryptics Dictionary” (UKACD) Version 1.6, by J Ross Beresford.
+
+Copyright © J Ross Beresford 1993-1999. All Rights Reserved. The following restriction is placed on the use of this publication: if the UK Advanced Cryptics Dictionary is used in a software package or redistributed in any form, the copyright notice must be prominently displayed and the text of this document must be included verbatim.
+
+There are no other restrictions: I would like to see the list distributed as widely as possible.
 
