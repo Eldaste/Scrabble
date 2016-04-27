@@ -1,6 +1,8 @@
 Taken straight from Wiki:
 https://en.wikipedia.org/wiki/Scrabble_letter_distributions#English
 
+GRAB BAG INFO
+--------------------------------
 English-language editions of Scrabble contain 100 letter tiles,
 in the following distribution:
 
@@ -12,5 +14,8 @@ in the following distribution:
 	5 points: K ×1
 	8 points: J ×1, X ×1
 	10 points: Q ×1, Z ×1
+	
+String: EEEEEEEEEEEEAAAAAAAAAIIIIIIIIIOOOOOOOONNNNNNRRRRRRTTTTTTLLLLSSSSUUUU
+DDDDGGGBBCCMMPPFFHHVVWWYYKJXQZ
 
 The total number of points is 187.
