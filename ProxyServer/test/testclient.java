@@ -5,14 +5,27 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
 import java.net.UnknownHostException;
+
+import javax.xml.parsers.SAXParser;
+
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+
+import test.SAXParseHandler;
 
 public class testclient {
 	static final String SERVER_ADDRESS = "localhost";
 	public static final int PROXYPORT = 2000;
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, SAXException {
 		// set up socket connection to server
 		try {
 			Socket clientSocket = new Socket(SERVER_ADDRESS, PROXYPORT);
@@ -24,12 +37,18 @@ public class testclient {
 			int wordPoints = 0;
 			out.println(word);
 			System.out.println("Client: " + word);
+			
+			String urlstring = "http://www.dictionaryapi.com/api/v1/references/collegiate/xml/"
+					+ word + "?key=947ca86c-59ce-423c-884d-a1a5e65321d9";
+			URL url = new URL(urlstring);
+			SAXParseHandler sax = new SAXParseHandler();
+			sax.readDataFromXML(urlstring);
 			if(in.readBoolean()) {// word exists in file
 				System.out.println("Server: exists!");
 				
 				for (int i = 0; i < word.length(); i++){
 				    char c = word.charAt(i);        
-				    wordPoints += getPoints(c);
+				    wordPoints += letterPoints(c);
 				}
 				System.out.println(wordPoints);
 			
@@ -58,7 +77,7 @@ public class testclient {
 		}
 
 	}
-	public static int getPoints(char c) {
+	public static int letterPoints(char c) {
         int letterPoints = 0;
 
         switch (c) {
