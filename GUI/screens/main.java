@@ -36,6 +36,8 @@ public class main extends JFrame {
 					main frame = new main();
 					frame.pack();
 					frame.setVisible(true);
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -54,8 +56,6 @@ public class main extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 
-	    //We create a sub-panel. Notice, that we don't use any layout-manager,
-	    //Because we want it to use the default FlowLayout
 	    PlayerN = new JPanel();
 	    
 	    JLabel northNumOfTiles = new JLabel("#ofTiles: " + MAX_TILES);
@@ -66,11 +66,8 @@ public class main extends JFrame {
 	    PlayerN.add(northScore);
 	    PlayerN.add(northName);
 
-	    //Now we simply add it to your main panel.
 	    contentPane.add(PlayerN, BorderLayout.NORTH);
-	    
-	    //We create a sub-panel. Notice, that we don't use any layout-manager,
-	    //Because we want it to use the default FlowLayout
+
 	    PlayerW = new JPanel();
 	    PlayerW.setLayout(new BoxLayout(PlayerW, BoxLayout.Y_AXIS));
 	    
@@ -82,11 +79,9 @@ public class main extends JFrame {
 	    PlayerW.add(westScore);
 	    PlayerW.add(westName);
 
-	    //Now we simply add it to your main panel.
+	  
 	    contentPane.add(PlayerW, BorderLayout.WEST);
-	    
-	    //We create a sub-panel. Notice, that we don't use any layout-manager,
-	    //Because we want it to use the default FlowLayout
+	   
 	    PlayerE = new JPanel();
 	    PlayerE.setLayout(new BoxLayout(PlayerE, BoxLayout.Y_AXIS));
 	    
@@ -98,11 +93,10 @@ public class main extends JFrame {
 	    PlayerE.add(eastScore);
 	    PlayerE.add(eastName);
 
-	    //Now we simply add it to your main panel.
+	    
 	    contentPane.add(PlayerE, BorderLayout.EAST);
 	    
-	    //We create a sub-panel. Notice, that we don't use any layout-manager,
-	    //Because we want it to use the default FlowLayout
+
 	    PlayerS = new JPanel();
 	    PlayerS.setLayout(new BoxLayout(PlayerS, BoxLayout.Y_AXIS));
 	    
@@ -114,7 +108,7 @@ public class main extends JFrame {
 	    PlayerS.add(southScore);
 	    PlayerS.add(southName);
 
-	    //Now we simply add it to your main panel.
+
 	    contentPane.add(PlayerS, BorderLayout.SOUTH);
 	    
 	    JPanel tileArray = new JPanel();
@@ -148,18 +142,75 @@ public class main extends JFrame {
 		    }
 	    }
 	    
-	    for(int i = 0; i < BOARD_TILES; i = i++)
+	    for(int i = 0; i < BOARD_TILES; i++)
 	    {
-	    	for(int j = 0; j < BOARD_TILES; j = j++)
+	    	for(int j = 0; j < BOARD_TILES; j++)
 		    {
 	    		if(Arrays.asList(0,7,14).contains(i) && (j % 7 == 0))
 	    		{
-	    			myBoard[i][j].setText("3x WS");
+	    			if((i == 7) && (j == 7))
+	    			{
+	    				myBoard[i][j].setText("***");
+	    			}else
+	    			{
+	    				myBoard[i][j].setText("3x WS");
+	    			}
+	    			
+	    			
+	    		}
+	    		
+	    		if(Arrays.asList(1,5,9,13).contains(i) && (Arrays.asList(5,9).contains(j)))
+	    		{
+	    			myBoard[i][j].setText("3x L");
+	    		}
+	    		
+	    		if(Arrays.asList(5,9).contains(i) && (Arrays.asList(1,13).contains(j)))
+	    		{
+	    			myBoard[i][j].setText("3x L");
+	    		}
+	    		
+	    		if(Arrays.asList(0,7,14).contains(i) && (Arrays.asList(3,11).contains(j)))
+	    		{
+	    			myBoard[i][j].setText("2x L");
+	    		}
+	    		
+	    		if(Arrays.asList(2,11).contains(i) && (Arrays.asList(6,8).contains(j)) )
+	    		{
+	    			myBoard[i][j].setText("2x L");
+	    		}
+	    		
+	    		if(Arrays.asList(3,10).contains(i) && (Arrays.asList(0,7,14).contains(j))) 
+	    		{
+	    			myBoard[i][j].setText("2x L");
+	    		}
+
+	    		if(Arrays.asList(6,8).contains(i) && (Arrays.asList(2,6,8,12).contains(j))) 
+	    		{
+	    			myBoard[i][j].setText("2x L");
+	    		}
+	    		
+	    		if(Arrays.asList(1,13).contains(i) && (Arrays.asList(1,13).contains(j))) 
+	    		{
+	    			myBoard[i][j].setText("2x W");
+	    		}
+	    		
+	    		if(Arrays.asList(2,12).contains(i) && (Arrays.asList(2,12).contains(j))) 
+	    		{
+	    			myBoard[i][j].setText("2x W");
+	    		}
+	    		
+	    		if(Arrays.asList(3,11).contains(i) && (Arrays.asList(3,11).contains(j))) 
+	    		{
+	    			myBoard[i][j].setText("2x W");
+	    		}
+	    		
+	    		if(Arrays.asList(4,10).contains(i) && (Arrays.asList(4,10).contains(j))) 
+	    		{
+	    			myBoard[i][j].setText("2x W");
 	    		}
 	    		
 		    }
 	    }
-	    
 	    
 	    
 	    for(int i = 0; i < BOARD_TILES; i++)
@@ -172,5 +223,43 @@ public class main extends JFrame {
 	    
 	    contentPane.add(BOARD, BorderLayout.CENTER);
 	}
-
+	
+		
+	public void deactivateAllButtons(JButton [][] myBoard)
+	{
+		for(int i = 0; i < BOARD_TILES; i++)
+	    {
+	    	for(int j = 0; j < BOARD_TILES; j++)
+		    {
+	    		myBoard[i][j].setEnabled(false);
+		    }
+	    }   
+	}
+	
+	public void activateAllButtons(JButton [][] myBoard)
+	{
+		for(int i = 0; i < BOARD_TILES; i++)
+	    {
+	    	for(int j = 0; j < BOARD_TILES; j++)
+		    {
+	    		myBoard[i][j].setEnabled(true);
+		    }
+	    }   
+	}
+	
+	public void deactivateTile(JButton [] myTiles)
+	{
+    	for(int i = 0; i < MAX_TILES; i++)
+	    {
+    		myTiles[i].setEnabled(false);
+	    }
+	}
+	
+	public void activateTile(JButton [] myTiles)
+	{
+    	for(int i = 0; i < MAX_TILES; i++)
+	    {
+    		myTiles[i].setEnabled(true);
+	    }
+	}
 }
