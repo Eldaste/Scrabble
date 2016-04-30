@@ -1,5 +1,6 @@
 package screens;
 
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -7,10 +8,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
 import java.util.Arrays;
+
+import player.GenericUsernameError;
+import player.Player;
 
 public class main extends JFrame {
 	
@@ -25,17 +30,78 @@ public class main extends JFrame {
 	private JPanel PlayerW;
 	private JPanel PlayerS;
 	private JPanel PlayerE;
-
+	
+	Player myPlayer; //southPlayer
+	Player wPlayer;
+	Player nPlayer;
+	Player ePlayer;
+	
+	/*
+	 * Final Declarations
+	 */
+	static final Object[] gameOptions = {"Make Game", "Join Game"};
+	static final Object[] playerOptions = {2,3,4};	
+	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					// initialize the board and start it running 
 					main frame = new main();
 					frame.pack();
 					frame.setVisible(true);
+					
+					//Can't use name outside of scope of while, not sure what to do here 
+					//while(true)
+					//{
+					//Ask for user input 
+				    String name = JOptionPane.showInputDialog(frame, "What's your name?");
+
+				   // if(name != null)
+				   // 	break;
+				   //}
+					
+					//create the player
+				    //Player myPlayer = new Player(name);
+				    
+				  //Custom button text
+				    
+				    int n = JOptionPane.showOptionDialog(frame,"Which would you like?","Game Setup",
+						    									JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,
+						    									null,gameOptions,gameOptions[1]);
+				    
+				    //case statement for the options  
+				    switch(n)
+				    {
+				    case 0:
+				    	//logic for making a game 
+				    	
+				    	int totPlayers = howMany(frame);
+				    	String GN = gameName(frame);
+				    	makeNewGame();
+				    	
+				    	break;
+				    case 1:
+				    	//logic for joining game 
+				    	break;
+				    default:
+				    	break;
+				    }
+				    
+					//check status of game 
+				    
+				    
+				    //when status is gained
+				    //initialize other players 
+				    
+				    
+				    //game logic
+				    
+					
 					
 					
 				} catch (Exception e) {
@@ -261,5 +327,23 @@ public class main extends JFrame {
 	    {
     		myTiles[i].setEnabled(true);
 	    }
+	}
+	
+	//asks how many players and returns that number
+	public static int howMany(JFrame parentFrame)
+	{
+		int n = JOptionPane.showOptionDialog(parentFrame,"Which would you like?","Game Setup",
+				JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,
+				null,playerOptions,playerOptions[1]);
+		return n;
+
+	}
+	
+	//asks how many players and returns that number
+	public static String gameName(JFrame parentFrame)
+	{
+		String GN = JOptionPane.showInputDialog(parentFrame, "What's your game name?");
+		return GN;
+
 	}
 }

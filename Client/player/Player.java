@@ -1,10 +1,20 @@
+package player;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import gameState.GameState;
+
 
 public class Player {
 
@@ -20,10 +30,11 @@ public class Player {
 	OutputStream out;
     InputStream in;
     
+    final String authFile = "auth.txt";
 	final int createAuth = 0x01;
 	final int getTile = 0x03;
 	
-	public Player(String name, int score, int numOfTiles) throws IOException, GenericUsernameError
+	public Player(String name) throws IOException, GenericUsernameError
 	{
 		//connect to server port 8080
 		connect();
@@ -64,11 +75,12 @@ public class Player {
 		}
 
 		//makes the init file
-		File initalization = new  File("init.txt");
+		File initalization = new  File(authFile);
 		
 		FileOutputStream fw = new FileOutputStream(initalization);
 		
 		fw.write(byteAuthToken);
+		fw.close();
 		
 		myScore = 0;
 		
@@ -91,10 +103,11 @@ public class Player {
 		return 0;
 	}
 
-	public int setScore()
+	public void setScore()
 	{
-		return 0;
+		
 	}
+
 	
 	public void connect()
 	{
@@ -115,7 +128,7 @@ public class Player {
 	/*
 	 * From Milo's Worker Thread
 	 */
-	public static int[] recoverMsg(InputStream i) throws IOException{
+	public int[] recoverMsg(InputStream i) throws IOException{
 		int msglen=0;
 		
 		ll:while(true){
@@ -140,7 +153,7 @@ public class Player {
 	}
 
 	
-	public static void sendMsg(int[] outgoing,OutputStream o) throws IOException{
+	public void sendMsg(int[] outgoing,OutputStream o) throws IOException{
 		int kk=outgoing.length;
 		
 		for(;kk>255;kk-=255){
@@ -153,4 +166,34 @@ public class Player {
 			o.write(outgoing[ii]);
 		}
 	}
+	
+	public int[] readFileToInt() throws IOException
+	{
+		ArrayList<Character> authList = new ArrayList<Character>();
+		FileReader fr = new FileReader(authFile);
+		BufferedReader br = new BufferedReader(fr);
+		String auth = br.readLine();
+		
+		//auth should be non-null
+		char[] tmp = auth.toCharArray();
+		int[] intAuth = new int[tmp.length];
+		
+		for(int i = 0; i < tmp.length; i++)
+		{
+			intAuth[i] = (int)tmp[i];
+		}
+		
+		return intAuth;
+	}
+	
+	
+	public GameState makeNewGame(int numPlayers, String GN) throws IOException
+	{
+		int[] myAuthInt = readFileToInt();
+		GameState = new GameState();
+		
+		return 0;
+	}
+	
+	
 }
