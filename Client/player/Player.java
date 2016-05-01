@@ -208,32 +208,47 @@ public class Player {
 		
 		int[] nameInt = byteToInt(myName.getBytes());
 		
-		//add the arguments 
-		int [] makeGameMsg = new int[nameInt.length+myAuthInt.length+name.length+2];
+		String numPl=Integer.toString(numP);
 		
-		for (int i = 0; i < nameInt.length; i++)
+		//add the arguments 
+		int [] makeGameMsg = new int[nameInt.length+myAuthInt.length+name.length+3+numPl.length()];
+		int i = 0;
+		
+		for (; i < nameInt.length; i++)
 		{
 			makeGameMsg[i]= nameInt[i];
 		}
 		
-		for (int i = nameInt.length; i < myAuthInt.length; i++)
+		makeGameMsg[i]=0;
+		i++;
+		
+		for (int j=0; j < myAuthInt.length; i++,j++)
 		{
-			makeGameMsg[i]= myAuthInt[i];
+			makeGameMsg[i]= myAuthInt[j];
 		}
 		
-		makeGameMsg[nameInt.length + myAuthInt.length] = numP ;
+		makeGameMsg[i]=nullSpace;
+		i++;
 		
-		makeGameMsg[myAuthInt.length+1] = nullSpace;
-		
-		for (int i = myAuthInt.length+1; i < makeGameMsg.length; i++)
+		for (int j=0; j < numPl.length(); i++,j++)
 		{
-			makeGameMsg[i] = name[i];
+			makeGameMsg[i]= numPl.charAt(j);
 		}
 		
+		makeGameMsg[i]=nullSpace;
+		i++;
+		
+		for (int j=0; j <name.length; j++,i++)
+		{
+			makeGameMsg[i] = name[j];
+		}
+		
+		out.write(makeGame);
 		sendMsg(makeGameMsg,out);
-		in.read();
 		
+		in.read();
 		recoverMsg(in);
+		//Done with creation of game at this point
 		
 		int[]checkGameMsg = new int[myAuthInt.length+1];
 		
