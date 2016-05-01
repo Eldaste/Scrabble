@@ -37,7 +37,7 @@ public class Worker extends Thread {
 					case 0x00:	if(serv.validate(msg))
 									outgoing[0]=0x00;
 								break;
-					case 0x01:	if(serv.userExists(msg))
+					case 0x01:	if(!serv.userExists(msg))
 									outgoing=serv.createUser(msg);
 								break;
 					case 0x02:  if(serv.validate(msg))
