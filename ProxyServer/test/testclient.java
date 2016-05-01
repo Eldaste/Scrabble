@@ -11,15 +11,9 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 
-import javax.xml.parsers.SAXParser;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
-import test.SAXParseHandler;
+import parser.Doc;
 
 public class testclient {
 	static final String SERVER_ADDRESS = "localhost";
@@ -41,8 +35,10 @@ public class testclient {
 			String urlstring = "http://www.dictionaryapi.com/api/v1/references/collegiate/xml/"
 					+ word + "?key=947ca86c-59ce-423c-884d-a1a5e65321d9";
 			URL url = new URL(urlstring);
-			SAXParseHandler sax = new SAXParseHandler();
-			sax.readDataFromXML(urlstring);
+			Doc d = new Doc();
+			//System.out.print(d.toString());
+			
+			
 			if(in.readBoolean()) {// word exists in file
 				System.out.println("Server: exists!");
 				
