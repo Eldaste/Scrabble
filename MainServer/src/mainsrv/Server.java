@@ -42,6 +42,7 @@ public class Server {
 			
 		    Class.forName("org.sqlite.JDBC");
 		    c = DriverManager.getConnection("jdbc:sqlite:"+GAMEDB);
+		    c.setAutoCommit(false);
 		    System.out.println("Opened database successfully");
 		    
 		    s=new ServerSocket(PORT);
