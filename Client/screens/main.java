@@ -11,6 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import gameState.GameState;
+
 import java.awt.GridLayout;
 import java.util.Arrays;
 
@@ -55,20 +58,20 @@ public class main extends JFrame {
 					frame.pack();
 					frame.setVisible(true);
 					
-					//Can't use name outside of scope of while, not sure what to do here 
-					//while(true)
-					//{
+					String name;
+					while(true)
+					{
 					//Ask for user input 
-				    String name = JOptionPane.showInputDialog(frame, "What's your name?");
+				    name = JOptionPane.showInputDialog(frame, "What's your name?");
 
-				   // if(name != null)
-				   // 	break;
-				   //}
+				    if(name != null)
+				    	break;
+				   }
 					
 					//create the player
-				    //Player myPlayer = new Player(name);
+				    Player myPlayer = new Player(name);
 				    
-				  //Custom button text
+				   //Custom button text
 				    
 				    int n = JOptionPane.showOptionDialog(frame,"Which would you like?","Game Setup",
 						    									JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,
@@ -79,11 +82,9 @@ public class main extends JFrame {
 				    {
 				    case 0:
 				    	//logic for making a game 
-				    	
 				    	int totPlayers = howMany(frame);
 				    	String GN = gameName(frame);
-				    	makeNewGame();
-				    	
+				    	GameState myGame = myPlayer.makeNewGame(totPlayers,GN);	    	
 				    	break;
 				    case 1:
 				    	//logic for joining game 

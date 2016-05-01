@@ -31,8 +31,10 @@ public class Player {
     InputStream in;
     
     final String authFile = "auth.txt";
+    final int nullSpace = 0x00;
 	final int createAuth = 0x01;
 	final int getTile = 0x03;
+	final int makeGame = 0x20;
 	
 	public Player(String name) throws IOException, GenericUsernameError
 	{
@@ -167,6 +169,16 @@ public class Player {
 		}
 	}
 	
+	public int[] byteToInt(byte[] bytes) {
+		int[] res=new int[bytes.length];
+		
+		for(int i=0;i>res.length;i++){
+			res[i]=bytes[i];
+		}
+		
+		return res;
+	}
+	
 	public int[] readFileToInt() throws IOException
 	{
 		ArrayList<Character> authList = new ArrayList<Character>();
@@ -187,12 +199,81 @@ public class Player {
 	}
 	
 	
-	public GameState makeNewGame(int numPlayers, String GN) throws IOException
+	public void makeNewGame(int numP, String gName) throws IOException
 	{
 		int[] myAuthInt = readFileToInt();
-		GameState = new GameState();
 		
-		return 0;
+		GameState myGameState = new GameState(gName,numP);
+		int[] name = myGameState.char2IntArray();
+		
+		int[] nameInt = byteToInt(myName.getBytes());
+		
+		//add the arguments 
+		int [] makeGameMsg = new int[nameInt.length+myAuthInt.length+name.length+2];
+		
+		for (int i = 0; i < nameInt.length; i++)
+		{
+			makeGameMsg[i]= nameInt[i];
+		}
+		
+		for (int i = nameInt.length; i < myAuthInt.length; i++)
+		{
+			makeGameMsg[i]= myAuthInt[i];
+		}
+		
+		makeGameMsg[nameInt.length + myAuthInt.length] = numP ;
+		
+		makeGameMsg[myAuthInt.length+1] = nullSpace;
+		
+		for (int i = myAuthInt.length+1; i < makeGameMsg.length; i++)
+		{
+			makeGameMsg[i] = name[i];
+		}
+		
+		sendMsg(makeGameMsg,out);
+		in.read();
+		
+		recoverMsg(in);
+		
+		int[]checkGameMsg = new int[myAuthInt.length+1];
+		
+		checkGameMsg[0] = nullSpace;
+		for(int i = 1; i < myAuthInt.length+1;i++)
+		{
+			checkGameMsg[i] = myAuthInt[i];
+		}
+		
+		sendMsg(checkGameMsg,out);
+		in.read();
+		
+		int[] response = recoverMsg(in);
+		
+		while(response[nullSpace] == 0x00)
+		{
+			sendMsg(checkGameMsg,out);
+			in.read();
+			
+			response = recoverMsg(in);
+		}
+
+		char[] valChar = new char[]
+		//it should only equal 1
+		if(response[nullSpace] == 1)
+		{
+			int num = response[1];
+			
+			int start = 0;
+			for(int i = start; i < num;i++)
+			{
+				if(response[i] == 0x00)
+				{
+					break;
+				}
+			}
+			
+			for(int j = start; j <  )
+		}
+
 	}
 	
 	

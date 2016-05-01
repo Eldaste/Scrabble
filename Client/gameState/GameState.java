@@ -11,11 +11,10 @@ public class GameState {
 	/*
 	 *  Ctor
 	 */
-	public GameState(String name, int numPlayers, int numID)
+	public GameState(String name, int numPlayers)
 	{
 		gName = name;
 		gNumPlayers = numPlayers;
-		gameNum = numID;
 		
 	}
 	
