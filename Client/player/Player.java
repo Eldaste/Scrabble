@@ -271,7 +271,7 @@ public class Player {
 			response = recoverMsg(in);
 		}
 
-		char[] valChar = new char[]
+		
 		//it should only equal 1
 		if(response[nullSpace] == 1)
 		{
