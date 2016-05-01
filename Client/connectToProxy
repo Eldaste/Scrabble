@@ -8,7 +8,7 @@ Save these variables at top of file:
 	word = word client tries
 	NOTE: if client sends word = "SHUTDOWNSHUTDOWNSHUTDOWNSHUTDOWN" then Proxy closes connection and on client side, client should stop sending
 	
-	public static void(String word) {
+	public static void connectProxy(String word) {
 	try {
 			Socket clientSocket = new Socket(PROXYSERVER_ADDRESS, PROXYPORT);
 			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
