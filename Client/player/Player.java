@@ -34,36 +34,42 @@ public class Player {
     final int nullSpace = 0x00;
 	final int createAuth = 0x01;
 	final int getTile = 0x03;
+	final int getGameSeek = 0x13;
 	final int makeGame = 0x20;
+	final int failResponse = 0xFF;
 	
 	public Player(String name) throws IOException, GenericUsernameError
 	{
 		//connect to server port 8080
 		connect();
 		
-		//intialize
+		//initialize
 		myName = name;
 		
-		//write auth code to output stream
+		System.out.println(myName);
+		
 		out.write(createAuth);
 		
-		//convert name to int array
-		int length = name.length();
+		byte [] nameBytes = myName.getBytes();
 		
-		int [] tmpName = new int[length+4];
+		int[] tmp = byteToInt(nameBytes);
 		
-		for(int i = 0; i < length; i++)
+		int [] tmpMsg = new int[tmp.length];
+
+		for(int i = 0; i < tmp.length;i++)
 		{
-			tmpName[i] = (int)name.charAt(i);
+			tmpMsg[i] = tmp[i];
 		}
 
+		System.out.println(tmpMsg.toString());
+		
 		//send int array
-		sendMsg(tmpName,out);
+		sendMsg(tmpMsg,out);
 		
 		in.read();
 	
 		int[] authToken = recoverMsg(in);
-		
+	
 		if(authToken[0] == 0xFF)
 		{
 			throw new GenericUsernameError();
@@ -88,6 +94,10 @@ public class Player {
 		
 		myNumOfTiles = 0;
 		
+	}
+	
+	public String getMyName() {
+		return myName;
 	}
 
 	public int getNumofTiles()
@@ -199,7 +209,7 @@ public class Player {
 	}
 	
 	
-	public void makeNewGame(int numP, String gName) throws IOException
+	public GameState makeNewGame(int numP, String gName) throws IOException
 	{
 		int[] myAuthInt = readFileToInt();
 		
@@ -253,9 +263,9 @@ public class Player {
 		int[]checkGameMsg = new int[myAuthInt.length+1];
 		
 		checkGameMsg[0] = nullSpace;
-		for(int i = 1; i < myAuthInt.length+1;i++)
+		for(int h = 1; h < myAuthInt.length+1;h++)
 		{
-			checkGameMsg[i] = myAuthInt[i];
+			checkGameMsg[h] = myAuthInt[h];
 		}
 		
 		sendMsg(checkGameMsg,out);
@@ -278,18 +288,104 @@ public class Player {
 			int num = response[1];
 			
 			int start = 0;
-			for(int i = start; i < num;i++)
+			for(;start< num;start++)
 			{
-				if(response[i] == 0x00)
+				if(response[start] == 0x00)
 				{
 					break;
 				}
 			}
 			
-			for(int j = start; j <  )
+			char[] tmp = new char[num-start+1];
+			for(; start < num;start++)
+			{
+				tmp[start] = (char)response[start];
+			}
+			
+			//tmp is now the game num in chars
+			String tmpString = tmp.toString();
+			
+			int GN = Integer.decode(tmpString);
+			
+			myGameState.setGameNum(GN);
 		}
 
+		return myGameState;
+		
 	}
 	
+	public void joinNewGame() throws IOException, joinFailureError
+	{
+		//get list of all matches
+		int[] tmp = composeUAMsg(getMyName(),readFileToInt());
+		
+		out.write(getGameSeek);
+		
+		sendMsg(tmp, out);
+		
+		in.read();
+		
+		int[] GS = recoverMsg(in);
+		
+		if(GS[nullSpace] == failResponse)
+		{
+			throw new joinFailureError();
+		}else
+		{
+			
+		}
+		
+		
+		
+	}
 	
+	public int[] composeUAMsg(String nameInt,int[] myAuthInt){
+		int [] makeGameMsg = new int[nameInt.length()+myAuthInt.length+2];
+		  int i = 0;
+		  
+		  for (; i < nameInt.length(); i++)
+		  {
+		   makeGameMsg[i]= nameInt.charAt(i);
+		  }
+		  
+		  makeGameMsg[i]=nullSpace;
+		  i++;
+		  
+		  for (int j=0; j < myAuthInt.length; i++,j++)
+		  {
+		   makeGameMsg[i]= myAuthInt[j];
+		  }
+		  
+		  makeGameMsg[i]=nullSpace;
+
+		  return makeGameMsg;
+	}
+	
+	public int[] composeMsg(String nameInt,int[] myAuthInt,int[] msg){
+		  int [] makeGameMsg = new int[nameInt.length()+myAuthInt.length+msg.length+2];
+		  int i = 0;
+		  
+		  for (; i < nameInt.length(); i++)
+		  {
+		   makeGameMsg[i]= nameInt.charAt(i);
+		  }
+		  
+		  makeGameMsg[i]=nullSpace;
+		  i++;
+		  
+		  for (int j=0; j < myAuthInt.length; i++,j++)
+		  {
+		   makeGameMsg[i]= myAuthInt[j];
+		  }
+		  
+		  makeGameMsg[i]=nullSpace;
+		  i++;
+		  
+		  for (int j=0; j < msg.length; i++,j++)
+		  {
+		   makeGameMsg[i]= msg[j];
+		  }
+
+		  return makeGameMsg;
+		}
 }

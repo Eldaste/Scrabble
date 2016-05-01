@@ -15,11 +15,16 @@ public class GameState {
 	{
 		gName = name;
 		gNumPlayers = numPlayers;
+		gameNum = 0;
 		
 	}
 	
 	public int getGameNum() {
 		return gameNum;
+	}
+	
+	public void setGameNum(int GN) {
+		gameNum = GN;
 	}
 	
 	public String getgName() {

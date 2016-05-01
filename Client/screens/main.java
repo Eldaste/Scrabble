@@ -76,28 +76,30 @@ public class main extends JFrame {
 				    int n = JOptionPane.showOptionDialog(frame,"Which would you like?","Game Setup",
 						    									JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,
 						    									null,gameOptions,gameOptions[1]);
+				    System.out.println(n);
+				    System.out.println(myPlayer.getMyName());
 				    
-				    //case statement for the options  
-				    switch(n)
-				    {
-				    case 0:
-				    	//logic for making a game 
-				    	int totPlayers = howMany(frame);
-				    	String GN = gameName(frame);
-				    	GameState myGame = myPlayer.makeNewGame(totPlayers,GN);	    	
-				    	break;
-				    case 1:
-				    	//logic for joining game 
-				    	break;
-				    default:
-				    	break;
-				    }
+//				    GameState myGame;
+//				    //case statement for the options  
+//				    switch(n)
+//				    {
+//				    case 0:
+//				    	//logic for making a game 
+//				    	int totPlayers = howMany(frame);
+//				    	String GN = gameName(frame);
+//				    	myGame = myPlayer.makeNewGame(totPlayers,GN);	    	
+//				    	break;
+//				    case 1:
+//				    	//logic for joining game
+//				    	myPlayer.joinNewGame();
+//				    	break;
+//				    default:
+//				    	break;
+//				    }
 				    
-					//check status of game 
+				    //you are in a game
 				    
-				    
-				    //when status is gained
-				    //initialize other players 
+				   
 				    
 				    
 				    //game logic
