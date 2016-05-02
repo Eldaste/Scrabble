@@ -1,5 +1,4 @@
 package test;
-import parsed.*;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -14,10 +13,7 @@ import java.net.UnknownHostException;
 
 import org.xml.sax.SAXException;
 
-<<<<<<< HEAD:ProxyServer/src/test/testclient.java
-=======
 import parser.Doc;
->>>>>>> refs/remotes/origin/SelinaBranch:ProxyServer/test/testclient.java
 
 public class testclient {
 	static final String PROXYSERVER_ADDRESS = "localhost";
@@ -39,6 +35,8 @@ public class testclient {
 		tryWord(word , out, in);
 		word = "bear";
 		tryWord(word , out, in);
+		word = "SHUTDOWNSHUTDOWNSHUTDOWNSHUTDOWN";
+		tryWord(word , out, in);
 	}
 	public static void connectProxy() throws IOException {
 
@@ -48,7 +46,9 @@ public class testclient {
 		int wordPoints = 0;
 		out.println(word);
 		System.out.println("Client: " + word);
-		
+		if (word.equals("shutdownshutdownshutdownshutdown")) {
+			return;
+		}
 		if(in.readBoolean()) {// word exists in file
 			System.out.println("Server: exists!");
 			for (int i = 0; i < word.length(); i++){
