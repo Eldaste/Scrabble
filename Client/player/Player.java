@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import gameState.GameState;
 
@@ -51,20 +52,15 @@ public class Player {
 		out.write(createAuth);
 		
 		byte [] nameBytes = myName.getBytes();
+		System.out.println(Arrays.toString(nameBytes));
 		
 		int[] tmp = byteToInt(nameBytes);
 		
-		int [] tmpMsg = new int[tmp.length];
 
-		for(int i = 0; i < tmp.length;i++)
-		{
-			tmpMsg[i] = tmp[i];
-		}
-
-		System.out.println(tmpMsg.toString());
+		System.out.println(Arrays.toString(tmp));
 		
 		//send int array
-		sendMsg(tmpMsg,out);
+		sendMsg(tmp,out);
 		
 		in.read();
 	
@@ -182,7 +178,7 @@ public class Player {
 	public int[] byteToInt(byte[] bytes) {
 		int[] res=new int[bytes.length];
 		
-		for(int i=0;i>res.length;i++){
+		for(int i=0;i<res.length;i++){
 			res[i]=bytes[i];
 		}
 		
@@ -260,9 +256,9 @@ public class Player {
 		recoverMsg(in);
 		//Done with creation of game at this point
 		
-		int[]checkGameMsg = new int[myAuthInt.length+1];
+		int[]checkGameMsg = composeUAMsg(nameInt, myAuthInt);
 		
-		checkGameMsg[0] = nullSpace;
+		
 		for(int h = 1; h < myAuthInt.length+1;h++)
 		{
 			checkGameMsg[h] = myAuthInt[h];
@@ -332,20 +328,43 @@ public class Player {
 			throw new joinFailureError();
 		}else
 		{
-			
+			for(int i = 0; i< GS[nullSpace];i++)
+			{
+				
+			}
 		}
 		
 		
 		
 	}
 	
-	public int[] composeUAMsg(String nameInt,int[] myAuthInt){
-		int [] makeGameMsg = new int[nameInt.length()+myAuthInt.length+2];
+	public static int[] concatWZero(int[] o,int[] t){
+		int [] makeGameMsg = new int[o.length+t.length+1];
 		  int i = 0;
 		  
-		  for (; i < nameInt.length(); i++)
+		  for (; i < nameInt.length; i++)
 		  {
-		   makeGameMsg[i]= nameInt.charAt(i);
+		   makeGameMsg[i]= o[i];
+		  }
+		  
+		  makeGameMsg[i]=0;
+		  i++;
+		  
+		  for (int j=0; j < myAuthInt.length; i++,j++)
+		  {
+		   makeGameMsg[i]= t[j];
+		  }
+
+		 return makeGameMsg;
+		}
+	
+	public int[] composeUAMsg(String name,int[] myAuthInt){
+		int [] makeGameMsg = new int[name.length()+myAuthInt.length+2];
+		  int i = 0;
+		  
+		  for (; i < name.length(); i++)
+		  {
+		   makeGameMsg[i]= name.charAt(i);
 		  }
 		  
 		  makeGameMsg[i]=nullSpace;

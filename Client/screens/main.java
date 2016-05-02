@@ -43,7 +43,7 @@ public class main extends JFrame {
 	 * Final Declarations
 	 */
 	static final Object[] gameOptions = {"Make Game", "Join Game"};
-	static final Object[] playerOptions = {2,3,4};	
+	static final Object[] playerOptions = {"2","3","4"};	
 	
 	/**
 	 * Launch the application.
@@ -79,23 +79,23 @@ public class main extends JFrame {
 				    System.out.println(n);
 				    System.out.println(myPlayer.getMyName());
 				    
-//				    GameState myGame;
-//				    //case statement for the options  
-//				    switch(n)
-//				    {
-//				    case 0:
-//				    	//logic for making a game 
-//				    	int totPlayers = howMany(frame);
-//				    	String GN = gameName(frame);
-//				    	myGame = myPlayer.makeNewGame(totPlayers,GN);	    	
-//				    	break;
+				    GameState myGame;
+				    //case statement for the options  
+				    switch(n)
+				    {
+				    case 0:
+				    	//logic for making a game 
+				    	int totPlayers = Integer.parseInt(howMany(frame)) + 2;
+				    	String GN = gameName(frame);
+				    	myGame = myPlayer.makeNewGame(totPlayers + 1,GN);	    	
+				    	break;
 //				    case 1:
 //				    	//logic for joining game
 //				    	myPlayer.joinNewGame();
 //				    	break;
-//				    default:
-//				    	break;
-//				    }
+				    default:
+				    	break;
+				    }
 				    
 				    //you are in a game
 				    
@@ -333,11 +333,9 @@ public class main extends JFrame {
 	}
 	
 	//asks how many players and returns that number
-	public static int howMany(JFrame parentFrame)
+	public static String howMany(JFrame parentFrame)
 	{
-		int n = JOptionPane.showOptionDialog(parentFrame,"Which would you like?","Game Setup",
-				JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,
-				null,playerOptions,playerOptions[1]);
+		String n = (String) JOptionPane.showInputDialog(parentFrame,"How many players?","Game Setup",JOptionPane.QUESTION_MESSAGE, null, playerOptions, playerOptions[1]);
 		return n;
 
 	}
