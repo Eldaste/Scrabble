@@ -11,10 +11,6 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 
-import org.xml.sax.SAXException;
-
-import parser.Doc;
-
 public class testclient {
 	static final String PROXYSERVER_ADDRESS = "localhost";
 	public static final int PROXYPORT = 2000;
