@@ -31,7 +31,7 @@ public class Worker extends Thread {
 				int c=i.read();
 				int[] msg=recoverMsg(i);
 				
-				System.out.println("Incoming msg: "+Arrays.toString(msg));
+				System.out.println("Incoming msg: "+Arrays.toString(msg)+" For Code: "+Integer.toHexString(c));
 				
 				int[] outgoing={0xFF};
 				
@@ -98,6 +98,8 @@ public class Worker extends Thread {
 					default:	break;
 				}}
 				catch (SQLException e) {e.printStackTrace();} 
+				
+				System.out.println("Sending msg: "+Arrays.toString(outgoing));
 				
 				o.write(c);
 				sendMsg(outgoing,o);
