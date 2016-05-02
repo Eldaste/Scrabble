@@ -1,3 +1,5 @@
+// (c) Milo Wimmer 2016, All Rights Reserved
+
 package Threads;
 
 import java.io.IOException;

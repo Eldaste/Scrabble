@@ -1,3 +1,5 @@
+// (c) Milo Wimmer 2016, All Rights Reserved
+
 package mainsrv;
 
 import java.io.IOException;
@@ -487,7 +489,7 @@ public class Server {
 	}
 
 	public int[] joinGame(int[] msg) throws SQLException {
-		String comm="INSERT INTO Seeking VALUES "+extractUsername(trimUA(msg))+", '"+extractUsername(msg)+"';";
+		String comm="INSERT INTO Seeking VALUES ("+extractUsername(trimUA(msg))+", '"+extractUsername(msg)+"');";
 		
 		stmt.executeUpdate(comm);
 		c.commit();

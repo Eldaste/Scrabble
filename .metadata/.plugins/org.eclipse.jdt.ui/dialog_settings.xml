@@ -3,13 +3,15 @@
 	<section name="FatJarPackageWizard">
 		<item value="C:\Users\Milo\Documents\GitHub\Scrabble" key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION"/>
 		<item value="Server - MainServer" key="FatJarPackageWizardPage.LAUNCH_CONFIGURATION_SELECTION_NAME"/>
-		<item value="MainServer\Server.jar" key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION"/>
+		<item value="C:\Users\Milo\Documents\GitHub\Scrabble\Runnables\Server\Server.jar" key="FatJarPackageWizardPage.DESTINATION_PATH_SELECTION"/>
 		<item value="false" key="FatJarPackageWizardPage.ANTSCRIPT_SAVE"/>
 		<item value="1" key="FatJarPackageWizardPage.LIBRARY_HANDLING"/>
 		<list key="FatJarPackageWizardPage.DESTINATION_NAMES_ID">
+			<item value="C:\Users\Milo\Documents\GitHub\Scrabble\Runnables\Server\Server.jar"/>
 			<item value="MainServer/Server.jar"/>
 		</list>
 		<list key="FatJarPackageWizardPage.ANTSCRIPT_LOCATION_HISTORY">
+			<item value="C:\Users\Milo\Documents\GitHub\Scrabble.xml"/>
 			<item value=".xml"/>
 		</list>
 	</section>

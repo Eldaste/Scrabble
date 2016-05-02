@@ -1,3 +1,5 @@
+/* (c) Milo Wimmer 2016, All Rights Reserved */
+
 drop table Users;
 drop table Game;
 drop table InGame;

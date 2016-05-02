@@ -19,8 +19,8 @@ Define:[UA] as Username[00]AuthToken[00]
 1: Menu Codes
 	0 Get game list|[UA]|[NumGames]([Size of Game Resp][Game Name][00][GameNum (in String Form)])* or [FF]
 	1 
-	2 Get Searching List|[UA]|[NumGames]([Size of Game Resp]Game Name[00][GameNum])* or [FF]
-	3 Get all GameSeek|[UA]|[NumGames]([Size of Game Resp]Game Name[00][GameNum])*
+	2 Get Searching List|[UA]|[NumGames]([Size of Game Resp]Game Name[00]GameNum)* or [FF]
+	3 Get all GameSeek|[UA]|[NumGames]([Size of Game Resp]Game Name[00]GameNum)*
 	
 2: GameSeek Codes
 	0 Make new Game|[UA]Num Players[00]Name|GameSNum
