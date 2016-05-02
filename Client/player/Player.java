@@ -342,7 +342,7 @@ public class Player {
 		int [] makeGameMsg = new int[o.length+t.length+1];
 		  int i = 0;
 		  
-		  for (; i < nameInt.length; i++)
+		  for (; i < o.length; i++)
 		  {
 		   makeGameMsg[i]= o[i];
 		  }
@@ -350,7 +350,7 @@ public class Player {
 		  makeGameMsg[i]=0;
 		  i++;
 		  
-		  for (int j=0; j < myAuthInt.length; i++,j++)
+		  for (int j=0; j < t.length; i++,j++)
 		  {
 		   makeGameMsg[i]= t[j];
 		  }
