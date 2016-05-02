@@ -89,10 +89,10 @@ public class main extends JFrame {
 				    	String GN = gameName(frame);
 				    	myGame = myPlayer.makeNewGame(totPlayers,GN);	    	
 				    	break;
-//				    case 1:
-//				    	//logic for joining game
-//				    	myPlayer.joinNewGame();
-//				    	break;
+				    case 1:
+				    	//logic for joining game
+				    	myPlayer.joinNewGame();
+				    	break;
 				    default:
 				    	break;
 				    }

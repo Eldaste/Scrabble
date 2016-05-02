@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import gameState.GameState;
 
@@ -31,6 +32,7 @@ public class Player {
 	OutputStream out;
     InputStream in;
     
+    final int MAX = 60000000;
     final String authFile = "auth.txt";
     final int nullSpace = 0x00;
 	final int createAuth = 0x01;
@@ -38,6 +40,7 @@ public class Player {
 	final int getGameList= 0x10;
 	final int getGameSeek = 0x13;
 	final int makeGame = 0x20;
+	final int joinGame = 0x21;
 	final int failResponse = 0xFF;
 	
 	public Player(String name) throws IOException, GenericUsernameError
@@ -208,7 +211,7 @@ public class Player {
 	}
 	
 	
-	public GameState makeNewGame(int numP, String gName) throws IOException
+	public GameState makeNewGame(int numP, String gName) throws IOException, InterruptedException
 	{
 		int[] myAuthInt = readFileToInt();
 		
@@ -269,10 +272,12 @@ public class Player {
 		
 		while(response[nullSpace] == 0x00)
 		{
+			out.write(getGameList);
 			sendMsg(checkGameMsg,out);
 			in.read();
-			
 			response = recoverMsg(in);
+			randomWait(MAX);
+			
 		}
 
 		
@@ -308,7 +313,7 @@ public class Player {
 		
 	}
 	
-	public void joinNewGame() throws IOException, joinFailureError
+	public void joinNewGame() throws Exception
 	{
 		//get list of all matches
 		int[] tmp = composeUAMsg(getMyName(),readFileToInt());
@@ -326,10 +331,73 @@ public class Player {
 			throw new joinFailureError();
 		}else
 		{
-			for(int i = 0; i< GS[nullSpace];i++)
-			{
-				
+			//int numGames = GS[nullSpace];
+			ArrayList<Integer> GNs = new ArrayList<Integer>();
+			//int gameResp = GS[1];
+			//int GN = 0;
+			
+			int i = 1;
+			int j = 1;
+			
+			i+=GS[i];
+			
+			StringBuffer tmpBuffer=new StringBuffer();
+			
+			for(;j+i<GS.length;j++){
+				if(GS[j+i] == 0)
+					break;
 			}
+			
+			j++;
+		
+			for(;j+i<GS[0+i]+1;j++){
+				tmpBuffer.append(GS[j+i]);
+			}
+			
+			/*for(;i<numGames;i++)
+			{
+				for(;j < gameResp+j;j++)
+				{
+					if(GS[j] == 0)
+						break;
+				}
+				
+				j++;
+				
+				StringBuffer
+				for(;j < gameResp+j;j++)
+				{
+					tmpBuffer.append();
+				}
+				
+				GNs.add(GS[j]);
+				j++;
+				gameResp = GS[j];
+			}*/
+			
+//			Integer [] gns = new Integer[GNs.size()];
+//			GNs.toArray(gns);
+			int[] ans;
+//			for(int h = 0;h < gns.length;h++)
+//			{
+//				do{
+//				
+				String stringGNS = tmpBuffer.toString();
+				int intGNs =  Integer.parseInt(stringGNS);
+				int[] newTMP = {intGNs};
+				out.write(joinGame);
+				sendMsg(composeMsg(myName,readFileToInt(),newTMP),out);
+				in.read();
+				
+				 ans = recoverMsg(in);
+				 
+				 if(ans[0] == failResponse)
+					 throw new Exception();
+//				
+//				}while(ans[0] != 0);
+//
+//			}
+			
 		}
 		
 		
@@ -404,5 +472,10 @@ public class Player {
 		  }
 
 		  return makeGameMsg;
+		}
+	
+	public void randomWait(int MaxTime) throws InterruptedException{
+		 Random rnd=new Random();
+		 Thread.sleep(rnd.nextInt(MaxTime));
 		}
 }

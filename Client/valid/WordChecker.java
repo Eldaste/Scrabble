@@ -34,8 +34,9 @@ public class WordChecker {
 		int wordPoints = 0;
 		out.println(word);	// send word to proxy to check
 		if (word.equals("shutdownshutdownshutdownshutdown")) { // stops proxy
-			return;	
+			return false;	
 		}
+		
 		if(in.readBoolean()) {// proxy sends back bool
 			return true;
 		}else{
