@@ -12,70 +12,54 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 
-import javax.xml.parsers.SAXParser;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
+<<<<<<< HEAD:ProxyServer/src/test/testclient.java
+=======
+import parser.Doc;
+>>>>>>> refs/remotes/origin/SelinaBranch:ProxyServer/test/testclient.java
 
 public class testclient {
-	static final String SERVER_ADDRESS = "localhost";
+	static final String PROXYSERVER_ADDRESS = "localhost";
 	public static final int PROXYPORT = 2000;
 
-	public static void main(String[] args) throws InterruptedException, SAXException {
+	public static void main(String[] args) throws IOException {
 		// set up socket connection to server
+		Socket clientSocket = null;
+		PrintWriter out = null;
+		DataInputStream in  = null;
 		try {
-			Socket clientSocket = new Socket(SERVER_ADDRESS, PROXYPORT);
-			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-			DataInputStream in = new DataInputStream(clientSocket.getInputStream());
-			String word;
-			word = "apple";
-			word = word.toLowerCase().trim();
-			int wordPoints = 0;
-			out.println(word);
-			System.out.println("Client: " + word);
-			
-			String urlstring = "http://www.dictionaryapi.com/api/v1/references/collegiate/xml/"
-					+ word + "?key=947ca86c-59ce-423c-884d-a1a5e65321d9";
-			URL url = new URL(urlstring);
-			SAXParseHandler sax = new SAXParseHandler();
-			sax.readDataFromXML(urlstring);
-			if(in.readBoolean()) {// word exists in file
-				System.out.println("Server: exists!");
-				
-				for (int i = 0; i < word.length(); i++){
-				    char c = word.charAt(i);        
-				    wordPoints += letterPoints(c);
-				}
-				System.out.println(wordPoints);
-			
-			}else{
-				System.out.println("Server: NOT exists!");
-			}
-			word = "cowboyzzzz";
-			out.println(word);
-			System.out.println("Client: " + word);
-			if(in.readBoolean()) {// word exists in file
-				System.out.println("Server: exists!");
-			//System.out.println("Server: " + response);
-			}else{
-				System.out.println("Server: NOT exists!");
-			}
-			word = "SHUTDOWNSHUTDOWNSHUTDOWNSHUTDOWN";
-			System.out.println("Client: " + word);
-			out.println(word);
-			//System.out.println("Server: " + response);
-			out.close(); // close stream
-
+			clientSocket = new Socket(PROXYSERVER_ADDRESS, PROXYPORT);
+			out = new PrintWriter(clientSocket.getOutputStream(), true);
+			in = new DataInputStream(clientSocket.getInputStream());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		String word = "apple";
+		tryWord(word , out, in);
+		word = "bear";
+		tryWord(word , out, in);
+	}
+	public static void connectProxy() throws IOException {
 
+	}
+	public static void tryWord(String word, PrintWriter out,DataInputStream in) throws IOException {
+		word = word.toLowerCase().trim();
+		int wordPoints = 0;
+		out.println(word);
+		System.out.println("Client: " + word);
+		
+		if(in.readBoolean()) {// word exists in file
+			System.out.println("Server: exists!");
+			for (int i = 0; i < word.length(); i++){
+			    char c = word.charAt(i);        
+			    wordPoints += letterPoints(c);
+			}
+			System.out.println(word + ": " + wordPoints);   // CHANGE?: Points for the word
+		
+		}else{
+			System.out.println("Server: NOT exists!");
+		}
 	}
 	public static int letterPoints(char c) {
         int letterPoints = 0;
