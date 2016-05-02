@@ -85,9 +85,9 @@ public class main extends JFrame {
 				    {
 				    case 0:
 				    	//logic for making a game 
-				    	int totPlayers = Integer.parseInt(howMany(frame)) + 2;
+				    	int totPlayers = Integer.parseInt(howMany(frame));
 				    	String GN = gameName(frame);
-				    	myGame = myPlayer.makeNewGame(totPlayers + 1,GN);	    	
+				    	myGame = myPlayer.makeNewGame(totPlayers,GN);	    	
 				    	break;
 //				    case 1:
 //				    	//logic for joining game

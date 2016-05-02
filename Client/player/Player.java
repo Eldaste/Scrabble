@@ -35,6 +35,7 @@ public class Player {
     final int nullSpace = 0x00;
 	final int createAuth = 0x01;
 	final int getTile = 0x03;
+	final int getGameList= 0x10;
 	final int getGameSeek = 0x13;
 	final int makeGame = 0x20;
 	final int failResponse = 0xFF;
@@ -66,6 +67,8 @@ public class Player {
 	
 		int[] authToken = recoverMsg(in);
 	
+		System.out.println(Arrays.toString(authToken));
+		
 		if(authToken[0] == 0xFF)
 		{
 			throw new GenericUsernameError();
@@ -256,13 +259,8 @@ public class Player {
 		recoverMsg(in);
 		//Done with creation of game at this point
 		
-		int[]checkGameMsg = composeUAMsg(nameInt, myAuthInt);
-		
-		
-		for(int h = 1; h < myAuthInt.length+1;h++)
-		{
-			checkGameMsg[h] = myAuthInt[h];
-		}
+		out.write(getGameList);
+		int[]checkGameMsg = concatWZero(nameInt, myAuthInt);
 		
 		sendMsg(checkGameMsg,out);
 		in.read();
