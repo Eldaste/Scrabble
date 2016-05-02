@@ -135,6 +135,8 @@ public class Server {
 		for(int i=0; i<DEFAULTAUTHLENGTH;i++){
 			auth[i]=token.charAt(i);
 		}
+		
+		System.out.println("Making User: "+extractUsername(msg));
 
 		String comm="INSERT INTO Users (Username,AuthToken) VALUES('"+extractUsername(msg)+"','"+token+"');";
 		
@@ -335,7 +337,7 @@ public class Server {
 	public int[] byteToInt(byte[] bytes) {
 		int[] res=new int[bytes.length];
 		
-		for(int i=0;i>res.length;i++){
+		for(int i=0;i<res.length;i++){
 			res[i]=bytes[i];
 		}
 		

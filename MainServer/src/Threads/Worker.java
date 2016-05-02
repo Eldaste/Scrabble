@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import mainsrv.Server;
 
@@ -29,6 +30,8 @@ public class Worker extends Thread {
 				
 				int c=i.read();
 				int[] msg=recoverMsg(i);
+				
+				System.out.println("Incoming msg: "+Arrays.toString(msg));
 				
 				int[] outgoing={0xFF};
 				

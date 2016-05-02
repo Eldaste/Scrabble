@@ -1,5 +1,9 @@
 Commands are given in [Code][Num of Bytes]Aurguments
 
+To Read the commands:
+	All codes are in Hex, Get player Nums is 0x31
+	Read Type of Command|ClientMsg|Server Msg
+
 If [Num Bytes] is 0, the next byte is [Num Bytes] + 255
 EX: [code][00][00][03]Msg will contain 513 bytes in the Msg
 
