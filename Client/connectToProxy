@@ -1,0 +1,95 @@
+Client connecting to Proxy server
+
+Save these variables at top of file:
+	static final String PROXYSERVER_ADDRESS = "localhost";
+	public static final int PROXYPORT = 2000;
+	
+	To establish connection (DO THIS ONCE FOR EACH CLIENT, in main or constructor?):
+	
+	Socket clientSocket = null;
+	PrintWriter out = null;
+	DataInputStream in  = null;
+	try {
+		clientSocket = new Socket(PROXYSERVER_ADDRESS, PROXYPORT);
+		out = new PrintWriter(clientSocket.getOutputStream(), true);
+		in = new DataInputStream(clientSocket.getInputStream());
+	} catch (UnknownHostException e) {
+		e.printStackTrace();
+	}
+	
+	tryWord(word , out, in); //TO TEST WORD
+	
+	NOTE: if client sends word = "SHUTDOWNSHUTDOWNSHUTDOWNSHUTDOWN" then Proxy closes connection and on client side, client should stop sending
+	
+	public static void tryWord(String word, PrintWriter out,DataInputStream in) throws IOException {
+		word = word.toLowerCase().trim();
+		int wordPoints = 0;
+		out.println(word);
+		System.out.println("Client: " + word);
+		
+		if(in.readBoolean()) {// word exists in file
+			System.out.println("Server: exists!");
+			for (int i = 0; i < word.length(); i++){
+			    char c = word.charAt(i);        
+			    wordPoints += letterPoints(c);
+			}
+			System.out.println(word + ": " + wordPoints);   // Total points for given word
+		
+		}else{
+			System.out.println("Server: NOT exists!");
+		}
+	}
+			
+To get points:
+
+public static int letterPoints(char c) {
+        int letterPoints = 0;
+
+        switch (c) {
+            case 'a':
+            case 'e':
+            case 'i':
+            case 'o':
+            case 'n':
+            case 'r':
+            case 't':
+            case 'l':
+            case 'u':
+                letterPoints = 1;
+                break;
+            case 'd':
+            case 'g':
+            	letterPoints = 2;
+                break;
+            case 'b':
+            case 'c':
+            case 'm':
+            case 'p':
+            	letterPoints = 3;
+                break;
+            case 'f':
+            case 'h':
+            case 'v':
+            case 'w':
+            case 'y':
+            	letterPoints = 4;
+                break;
+            case 'k':
+            	letterPoints = 5;
+                break;
+            case 'j':
+            case 'x':
+            	letterPoints= 6;
+                break;
+            case 'q':
+            case 'z':
+            	letterPoints = 7;
+                break;
+           
+            default: 
+            	letterPoints = 0;
+                break;
+        }
+
+        return letterPoints;
+    }
