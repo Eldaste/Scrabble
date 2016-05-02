@@ -38,9 +38,7 @@ public class testclient {
 		word = "SHUTDOWNSHUTDOWNSHUTDOWNSHUTDOWN";
 		tryWord(word , out, in);
 	}
-	public static void connectProxy() throws IOException {
 
-	}
 	public static void tryWord(String word, PrintWriter out,DataInputStream in) throws IOException {
 		word = word.toLowerCase().trim();
 		int wordPoints = 0;
